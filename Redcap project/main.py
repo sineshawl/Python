@@ -17,12 +17,7 @@ class leftFrame(ctk.CTkFrame):
 
         self.inner_frame2 = ctk.CTkFrame(self, fg_color="gray", corner_radius=10)
         self.inner_frame2.grid(row = 1, column=0, padx=10, pady=(10, 30), sticky="nsew")
-
-        
-        # self.inner_frame2.rowconfigure((0, 4), weight=1)
-        # self.inner_frame2.rowconfigure((1,2,3), weight=1)
-     
-        
+    
         self.inner_frame2.columnconfigure(0, weight=1)
 
         self.label_user = ctk.CTkLabel(self.inner_frame2, text="user", font=('Arial', 20))
