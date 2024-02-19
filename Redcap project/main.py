@@ -1,7 +1,9 @@
 import customtkinter
 import customtkinter as ctk
-
+from tkinter import ttk
 from project_setting import projectSetting
+
+
 
 class leftFrame(ctk.CTkFrame):
     def __init__(self, master):
@@ -24,15 +26,15 @@ class leftFrame(ctk.CTkFrame):
         self.label_user.grid(row = 0, column=0, padx=10, pady=2, sticky='ew')
         
 
-        self.btn = ctk.CTkButton(self.inner_frame2, text='project setting', command=lambda: projectSetting(master))
-        self.btn.grid(row = 1, column=0, padx=10, pady=(60, 0), sticky='ew')
+        self.btn = ctk.CTkButton(self.inner_frame2, text='project setting', font=('Arial', 10),command=lambda: projectSetting(master))
+        self.btn.grid(row = 1, column=0, padx=2, pady=(30, 0), sticky='ew')
 
         for i in range(3):
-            self.button = ctk.CTkButton(self.inner_frame2, text=f'Button {i+1}')
-            self.button.grid(row = i+2, column=0, padx=10, pady=10, sticky='nsew')
+            self.button = ctk.CTkButton(self.inner_frame2, text=f'Button {i+1}', font=('Arial', 15))
+            self.button.grid(row = i+2, column=0, padx=2, pady=2, sticky='nsew')
 
 
-        self.switch_themer =ctk.CTkSwitch(self.inner_frame2, text="switch Theme", command=self.switch_theme, onvalue="on", offvalue="of")
+        self.switch_themer =ctk.CTkSwitch(self.inner_frame2, text="switch Theme", command=lambda : self.switch_theme(), onvalue="on", offvalue="of")
         self.switch_themer.grid(row = 5, column=0, padx=10, pady=10, sticky='nsew')
 
 
@@ -53,14 +55,108 @@ class middleFrame(ctk.CTkFrame):
         super().__init__(master)
 
         self.columnconfigure(0, weight=5)
-        self.rowconfigure(0, weight=1)
-        self.rowconfigure(1, weight=8)
+        self.rowconfigure(tuple(range(12)), weight=1)
+  
         
-        self.inner_frame1 = ctk.CTkFrame(self, fg_color="gray", corner_radius=35, height=120 )
-        self.inner_frame1.grid(row = 0, column=0, padx=10, pady=(10,0), sticky="nsew")
+        self.inner_frame1 = ctk.CTkFrame(self, fg_color="gray", corner_radius=10, height=120 )
+        self.inner_frame1.grid(row = 0, column=0, padx=10, pady=(10,0), sticky="ew")
 
-        self.inner_frame2 = ctk.CTkFrame(self, fg_color="gray", corner_radius=10  )
-        self.inner_frame2.grid(row = 1, column=0, padx=10, pady=(10,30), sticky="nsew")
+        self.inner_frame2 = ctk.CTkFrame(self, fg_color="gray", corner_radius=10)
+        self.inner_frame2.grid(row = 1, rowspan=11, column=0, padx=10, pady=(2,30), sticky="nsew")
+
+
+        self.inner_frame2.rowconfigure(tuple(range(9)), weight=1)
+        self.inner_frame2.columnconfigure(tuple(range(12)), weight=1)
+
+        self.option = ctk.CTkOptionMenu(self.inner_frame2,values=['Tab 1', 'Tab 2', 'Tab 3', 'Tab 4', 'Tab 5'])
+        self.option.grid(row=9, column=0, padx=2, pady=2, sticky='ew')
+
+        self.btn_tabviewer = ctk.CTkButton(self.inner_frame2, text=f'Tab {1}', text_color= ('black', 'white'), fg_color='transparent', command= self.tab_viewer(1))
+        self.btn_tabviewer.grid(row=9, column=1, padx=2, pady=2, sticky='ew')
+
+        self.btn_tabviewer = ctk.CTkButton(self.inner_frame2, text=f'Tab {2}', fg_color='transparent', command=lambda: self.tab_viewer(2))
+        self.btn_tabviewer.grid(row=9, column=2, padx=2, pady=2, sticky='ew')
+
+        self.btn_tabviewer = ctk.CTkButton(self.inner_frame2, text=f'Tab {3}', fg_color='transparent', command=lambda: self.tab_viewer(3))
+        self.btn_tabviewer.grid(row=9, column=3, padx=2, pady=2, sticky='ew')
+
+        self.btn_tabviewer = ctk.CTkButton(self.inner_frame2, text=f'Tab {4}', fg_color='transparent', command=lambda: self.tab_viewer(4))
+        self.btn_tabviewer.grid(row=9, column=4, padx=2, pady=2, sticky='ew')
+
+        self.btn_tabviewer = ctk.CTkButton(self.inner_frame2, text=f'Tab {5}', fg_color='transparent', command=lambda: self.tab_viewer(5))
+        self.btn_tabviewer.grid(row=9, column=5, padx=2, pady=2, sticky='ew')
+
+        self.btn_tabviewer = ctk.CTkButton(self.inner_frame2, text=f'Tab {6}', fg_color='transparent', command=lambda: self.tab_viewer(5))
+        self.btn_tabviewer.grid(row=9, column=6, padx=2, pady=2, sticky='ew')
+
+        self.btn_tabviewer = ctk.CTkButton(self.inner_frame2, text=f'Tab 7', fg_color='transparent', command=lambda: self.tab_viewer(5))
+        self.btn_tabviewer.grid(row=9, column=7, padx=2, pady=2, sticky='ew')
+
+
+        # self.tab_view1 = ctk.CTkTabview(self.inner_frame2)
+        # self.tab_view1.grid(row=0, rowspan=9, column =0, padx=2, pady=2, columnspan=13, sticky='nsew')
+
+        # self.label = ctk.CTkLabel(self.tab_view1, text=f'Tab 1')
+        # self.label.place(relx=0.5, rely=0.5)
+  
+
+
+    def tab_viewer(self, i):
+
+        # color = ['red', 'green', 'yellow', 'blue', 'cyan']
+        # self.tab_view1 = ctk.CTkTabview(self.inner_frame2)
+        # self.tab_view1.place(relx=0.02, rely=0.02, relwidth=0.96, relheight=0.90)
+
+        # self.tab_view1.grid(row=0, rowspan=9, column =0, padx=2, pady=2, columnspan=13, sticky='nsew')
+
+        # self.inner_inner_frame =ctk.CTkFrame(self.tab_view1)
+        # self.inner_inner_frame.place(relx=0.01, rely=0.01, relwidth=0.98, relheight=0.98)
+
+        cols = ([i for i in range(13)])
+        self.treeview = ttk.Treeview(self.inner_frame2, show='headings', columns=cols )
+        self.treeview.grid(row=0, rowspan=9, column =0, padx=10, pady=10, columnspan=13, sticky='nsew')
+# grid(row = 1, rowspan=11, column=0, padx=10, pady=(2,30), sticky="nsew")
+
+        for colname in cols:
+            self.treeview.column(colname, anchor='center', width=40)
+            self.treeview.heading(colname, text=colname)
+
+        values=[i for i in range(13)]
+        keys=['A','B','C','D','E','F','H']
+        my_dict ={}
+        for key in keys:
+            my_list = []
+            for value in values:
+                if value == 0:
+                    my_list.append(key)
+                else:
+                    my_list.append(key+str(value))
+            my_dict[key] = my_list
+
+
+        for key in my_dict.keys():
+            self.treeview.insert(parent="", index="end", id=key, text="", values=tuple(my_dict[key]))
+
+
+        self.treeview.bind("<Double-1>", self.on_double_click)
+
+
+    def on_double_click(self, event):
+        self_iid = self.treeview.focus()
+        selected_values = self.treeview.item(self_iid)
+        print(selected_values)
+        # self.label = ctk.CTkLabel(self.tab_view1, text=f'Tab {i}')
+        # self.label.place(relx=0.5, rely=0.5)
+        # self.inner_inner_frame.rowconfigure(tuple(range(8)), weight=1)
+        # self.inner_inner_frame.columnconfigure(tuple(range(12)), weight=1)
+        # ctk.CTk
+        # for i in range(8):
+        #     for j in range(12):
+        #         self.input = ctk.CTkEntry(self.inner_inner_frame, font=('Arial', 10), corner_radius=0)
+        #         self.input.grid(row=i, column=j, padx=0, pady=0, sticky='ew')
+        
+
+
 class rightFrame(ctk.CTkFrame):
     def __init__(self, master):
         super().__init__(master)
@@ -82,11 +178,11 @@ class App(ctk.CTk):
         super().__init__()
 
         self.title('GPyRed')
-        self.geometry('600x400')
+        self.geometry('700x500')
     
-        self.resizable(width=True, height=True)
+        # self.resizable(width=True, height=True)
         
-
+        
         
         self.mainFrame = ctk.CTkFrame(self)
         self.rowconfigure(0, weight=1) 
@@ -102,7 +198,7 @@ class App(ctk.CTk):
         self.frame1.place(relx=0.01, rely=0.02, relwidth=0.18, relheight=0.92)
 
 
-        self.btn_side_bar = ctk.CTkButton(self.mainFrame, text="←", font=('Arial',25),text_color=('black', 'white'), hover=False, fg_color=('white', 'black'),command=self.show_hide_frame)
+        self.btn_side_bar = ctk.CTkButton(self.mainFrame, text="←", font=('Arial',25),text_color=('black', 'white'), hover=False, fg_color=('white', 'black'),command=lambda: self.show_hide_frame())
         self.btn_side_bar.place(relx=0.01, rely=0.95, relwidth=0.06, relheight=0.04)
 
         self.frame2 = middleFrame(self.mainFrame)  # Calling class middleFrame
@@ -134,7 +230,7 @@ class App(ctk.CTk):
             self.frame2_width +=0.05
             self.frame1.place(relx=self.frame1_start, rely=0.02, relwidth=0.18, relheight=0.92)
             self.frame2.place(relx=self.frame2_start, rely=0.02, relwidth=self.frame2_width, relheight=0.92)
-            self.after(50, self.hide_frame) # calling function hide_frame after 100 milliseconds
+            self.after(1, self.hide_frame) # calling function hide_frame after 100 milliseconds
             self.btn_side_bar.configure(text='→')
 
     def show_frame(self):
@@ -146,7 +242,7 @@ class App(ctk.CTk):
 
             self.frame1.place(relx=self.frame1_start, rely=0.02, relwidth=0.18, relheight=0.92)
             self.frame2.place(relx=self.frame2_start, rely=0.02, relwidth=self.frame2_width, relheight=0.92)
-            self.after(50, self.show_frame)
+            self.after(1, self.show_frame)
 
             self.btn_side_bar.configure(text='←')
 

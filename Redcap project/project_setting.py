@@ -24,7 +24,8 @@ class projectSetting(ctk.CTkFrame):
     def edit_token(self, key, value):
         self.edit_popup = ctk.CTkInputDialog(text=api_list[key][value], title='Edit API token')
     def add_token(self, key):
-        self.add_popup = ctk.CTkInputDialog(text='Enter the API token', title='Add new API token')
+        self.add_popup = ctk.CTkInputDialog(text='Enter the API token', title='Add new API token', command=lambda:print(self.add_popup.getvar()))
+        # print(self.add_popup.getvar())
     def delete_token(self, key, value):
         # self.delete_token = ctk.CTkLabel
         self.edit_popup = ctk.CTkInputDialog(text=api_list[key][value], title='Edit API token')
@@ -33,9 +34,11 @@ class projectSetting(ctk.CTkFrame):
     def __init__(self, master):
         super().__init__(master)
         self.place(relx=0.01, rely=0.01, relwidth=0.76, relheight=0.99)
+
+        
         self.btn_back = ctk.CTkButton(self, text="⇠",font=('Arial', 20) ,text_color=('black', 'white'), fg_color=('white', 'black'), command=self.minimize)
         self.btn_back.place(relx=0.92, rely=0.02, relwidth=0.07, relheight=.03)
-
+    
 
 
         self.inner_frame = ctk.CTkScrollableFrame(self)
@@ -76,7 +79,7 @@ class projectSetting(ctk.CTkFrame):
 
                 value_index +=1
             counter +=1  
-            self.btn_add = ctk.CTkButton(self.inner_frame, text=None, width=30, fg_color="transparent", image=self.add_image)
+            self.btn_add = ctk.CTkButton(self.inner_frame, text=None, width=30, fg_color="transparent", image=self.add_image, command=lambda:self.add_token(key))
             self.btn_add.grid(row = counter, column=0, padx=(10,1), pady=1, sticky='nsew')
 
             counter += 1 
