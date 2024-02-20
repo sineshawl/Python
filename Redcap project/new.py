@@ -1,57 +1,32 @@
-from customtkinter import *
+import tkinter as tk
 from tkinter import ttk
 
-# Create the main application window
-window = CTk()
-window.title("Treeview Example")
+root = tk.Tk()
 
-# Create a frame to hold the Treeview widget
-frame = CTkFrame(window)
-frame.pack(fill=BOTH, expand=True)
+# Create a Treeview widget
+tree = ttk.Treeview(root, columns=("column1", "column2"), show="headings")
+tree.heading("#1", text="Column 1")
+tree.heading("#2", text="Column 2")
 
-# Create a Treeview widget inside the frame
-cols = ([i for i in range(13)])
+# Insert sample data
+for i in range(10):
+    tree.insert("", "end", values=("Value " + str(i), "Value " + str(i)))
 
-tree = ttk.Treeview(frame, show='headings', columns=cols)
-tree.pack(side=LEFT, fill=BOTH, expand=True)
+# Configure background color for specific columns
+tree.tag_configure("column1_tag", background="lightblue")
+tree.tag_configure("column2_tag", background="lightgreen")
 
-# # Configure the columns
+# Tag all cells in the first column with "column1_tag"
+for i in range(10):
+    tree.tag_configure("cell_tag_" + str(i), background="lightblue")
+    tree.item(tree.get_children()[i], tags=("cell_tag_" + str(i),))
 
-for colname in cols:
-    tree.column(colname, anchor=CENTER, width=40)
-    tree.heading(colname, text=colname)
+# Tag all cells in the second column with "column2_tag"
+# for i in range(10):
+#     tree.tag_configure("cell_tag_" + str(i), background="lightgreen")
+#     tree.item(tree.get_children()[i], tags=("cell_tag_" + str(i),))
 
-values=[i for i in range(13)]
-keys=['A','B','C','D','E','F','H']
-my_dict ={}
-for key in keys:
-    my_list = []
-    for value in values:
-        if value == 0:
-            my_list.append(key)
-        else:
-            my_list.append(key+str(value))
-    my_dict[key] = my_list
+# Pack the Treeview widget
+tree.pack(expand=True, fill=tk.BOTH)
 
-
-print(my_dict['A'])
-
-# Configure the headings
-# tree.column('#0', anchor=CENTER, width=80)
-# tree.heading("#0", text="", anchor=CENTER)
-
-# for i in range(12):
-#     tree.column(i+1, anchor=CENTER, width=80)
-#     tree.heading(i+1, text=i+1, anchor=CENTER)
-
-# # Add some items to the Treeview
-for key in my_dict.keys():
-    tree.insert(parent="", index="end", id=key, text="", values=tuple(my_dict[key]))
-
-
-# # Add a vertical scrollbar to the Treeview
-# scrollbar = CTkScrollbar(frame, orientation=VERTICAL, command=tree.yview)
-# scrollbar.pack(side=RIGHT, fill=Y)
-# tree.configure(yscrollcommand=scrollbar.set)
-
-window.mainloop()
+root.mainloop()

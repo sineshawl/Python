@@ -1,6 +1,8 @@
 import customtkinter
 import customtkinter as ctk
 from tkinter import ttk
+import tkinter as tk
+from customtkinter import CTk
 from project_setting import projectSetting
 
 
@@ -22,7 +24,7 @@ class leftFrame(ctk.CTkFrame):
     
         self.inner_frame2.columnconfigure(0, weight=1)
 
-        self.label_user = ctk.CTkLabel(self.inner_frame2, text="user", font=('Arial', 20))
+        self.label_user = ctk.CTkLabel(self.inner_frame2, text="user", font=('Arial', 20), )
         self.label_user.grid(row = 0, column=0, padx=10, pady=2, sticky='ew')
         
 
@@ -45,8 +47,17 @@ class leftFrame(ctk.CTkFrame):
     def switch_theme(self):
         if self._get_appearance_mode() == 'dark':
             customtkinter.set_appearance_mode('light')
+            style = ttk.Style()
+            # Customize the Treeview widget style
+            style.configure("Treeview", background="#EBEBEB", fieldbackground="#EBEBEB", foreground="black", borderwidth=10 )
+
         else:
             customtkinter.set_appearance_mode('dark')
+            style = ttk.Style()
+            # Customize the Treeview widget style
+            style.configure("Treeview", background="#646668", fieldbackground="#646668", foreground="white")
+
+
 
         
 
@@ -113,13 +124,17 @@ class middleFrame(ctk.CTkFrame):
         # self.inner_inner_frame.place(relx=0.01, rely=0.01, relwidth=0.98, relheight=0.98)
 
         cols = ([i for i in range(13)])
+        cols[0]=''
         self.treeview = ttk.Treeview(self.inner_frame2, show='headings', columns=cols )
         self.treeview.grid(row=0, rowspan=9, column =0, padx=10, pady=10, columnspan=13, sticky='nsew')
-# grid(row = 1, rowspan=11, column=0, padx=10, pady=(2,30), sticky="nsew")
+       # grid(row = 1, rowspan=11, column=0, padx=10, pady=(2,30), sticky="nsew")
+        
+        self.treeview.configure(padding=20, selectmode='extended')
 
         for colname in cols:
             self.treeview.column(colname, anchor='center', width=40)
             self.treeview.heading(colname, text=colname)
+        
 
         values=[i for i in range(13)]
         keys=['A','B','C','D','E','F','H']
@@ -137,6 +152,31 @@ class middleFrame(ctk.CTkFrame):
         for key in my_dict.keys():
             self.treeview.insert(parent="", index="end", id=key, text="", values=tuple(my_dict[key]))
 
+        style = ttk.Style()
+        style.theme_use('default')
+        # self.treeview.tag_configure('odd', background='#E8E8E8')
+        # self.treeview.tag_configure('even', background='#DFDFDF')
+
+        # Apply the custom style to the Treeview widget
+        # self.treeview.configure(style="Custom.Treeview")
+        # Customize the Treeview widget style
+        style.configure("Treeview", background="#646668", fieldbackground="#646668", foreground="white")
+
+        # Change the font of the Treeview widget
+        # style.configure("Treeview", font=("Helvetica", 12))
+
+        # # Change the background color of the Treeview widget
+        # style.configure("Treeview", background="lightgray")
+
+        # # Change the foreground color of the Treeview widget
+        # style.configure("Treeview", foreground="black")
+
+        # Change the row height of the Treeview widget
+        style.configure("Treeview", rowheight=40)
+
+        # Change the color of the selected item
+        style.map("Treeview", background=[("selected", "#1466BD")], foreground=[("selected", "white")])
+
 
         self.treeview.bind("<Double-1>", self.on_double_click)
 
@@ -144,17 +184,52 @@ class middleFrame(ctk.CTkFrame):
     def on_double_click(self, event):
         self_iid = self.treeview.focus()
         selected_values = self.treeview.item(self_iid)
-        print(selected_values)
-        # self.label = ctk.CTkLabel(self.tab_view1, text=f'Tab {i}')
-        # self.label.place(relx=0.5, rely=0.5)
-        # self.inner_inner_frame.rowconfigure(tuple(range(8)), weight=1)
-        # self.inner_inner_frame.columnconfigure(tuple(range(12)), weight=1)
-        # ctk.CTk
-        # for i in range(8):
-        #     for j in range(12):
-        #         self.input = ctk.CTkEntry(self.inner_inner_frame, font=('Arial', 10), corner_radius=0)
-        #         self.input.grid(row=i, column=j, padx=0, pady=0, sticky='ew')
+
+        column = self.treeview.identify_column(event.x)
+        colindex = int(column[1:])-1
+
+        selected_text = ''
+        if column == '#0':
+            selected_text = selected_values.get('text')[colindex]
+        else:
+            selected_text = selected_values.get('values')[colindex]
+
+
+        column_box = self.treeview.bbox(self_iid, column)
+        self.entry = ttk.Entry(self.treeview, width=column_box[2])
+        self.entry.place(x = column_box[0], y=column_box[1], w=column_box[2], h=column_box[3] )
+
+
+        self.entry.insert(0, selected_text) #insert cell text to the entry
+        self.entry.select_range(0, tk.END) # select the whole text of the entry
+        self.entry.focus()
+
+        self.entry.column_index = colindex
+        self.entry.item_iid = self_iid
+
+        self.entry.bind("<FocusOut>", self.on_focus_out) # to disappear the entry widget on focus out
+
+        self.entry.bind("<Return>", self.on_enter_pressed)
+    def on_focus_out(self, event):
+        event.widget.destroy()
+
+    def on_enter_pressed(self, event):
+        new_value = event.widget.get()
+        print(new_value)
+
+        selected_iid = event.widget.item_iid
+
+        selected_column_index = event.widget.column_index
+
+
+        self.current_value = self.treeview.item(selected_iid).get('values')
+        self.current_value[selected_column_index]= new_value
+        self.treeview.item(selected_iid, values=self.current_value)
         
+        event.widget.destroy()
+
+
+
 
 
 class rightFrame(ctk.CTkFrame):
