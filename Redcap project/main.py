@@ -148,12 +148,17 @@ class middleFrame(ctk.CTkFrame):
                     my_list.append(key+str(value))
             my_dict[key] = my_list
 
-
+        col=0
         for key in my_dict.keys():
-            self.treeview.insert(parent="", index="end", id=key, text="", values=tuple(my_dict[key]))
+            for value in my_dict[key]:
+                if col == 0:
+                    self.treeview.insert(parent="", index="end", id=key, text="", values=tuple(my_dict[key][0]), tags=('first_column'))
+            self.treeview.insert(parent="", index="end", id=key, text="", values=tuple(my_dict[key][1:]), tags=('green'))
 
         style = ttk.Style()
         style.theme_use('default')
+        self.treeview.tag_bind()
+        # self.treeview.tag_configure('first_column', background='red')
         # self.treeview.tag_configure('odd', background='#E8E8E8')
         # self.treeview.tag_configure('even', background='#DFDFDF')
 
