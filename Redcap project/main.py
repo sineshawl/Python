@@ -158,9 +158,7 @@ class middleFrame(ctk.CTkFrame):
         style = ttk.Style()
         style.theme_use('default')
         self.treeview.tag_bind()
-        # self.treeview.tag_configure('first_column', background='red')
-        # self.treeview.tag_configure('odd', background='#E8E8E8')
-        # self.treeview.tag_configure('even', background='#DFDFDF')
+
 
         # Apply the custom style to the Treeview widget
         # self.treeview.configure(style="Custom.Treeview")
