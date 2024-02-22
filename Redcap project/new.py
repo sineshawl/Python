@@ -1,16 +1,16 @@
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 # Replace with your JSON key file path
-service_account_file = 'client_secret.json'
+service_account_file = 'client_auth.json'
 
 # Use a scope that only grants read access to Google 
-scopes = ''
-# # scopes = ['https://spreadsheets.google.com/feeds',
-#           'https://www.googleapis.com/auth/spreadsheets',
-#           'https://www.googleapis.com/auth/drives']
+
+scopes = ['https://spreadsheets.google.com/feeds',
+          'https://www.googleapis.com/auth/spreadsheets',
+          'https://www.googleapis.com/auth/drives']
 
 # Use service account credentials for 
-my_credentials = ServiceAccountCredentials.from_json_keyfile_name(filename='client_secret.json')
+my_credentials = ServiceAccountCredentials.from_json_keyfile_name(filename=service_account_file, scopes=scopes)
 # gspread.use_service_account_file(service_account_file, scopes=scopes)
 my_client = gspread.authorize(my_credentials)
 # Open the Google Sheet by its title or URL
