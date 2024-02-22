@@ -5,9 +5,8 @@ service_account_file = 'client_auth.json'
 
 # Use a scope that only grants read access to Google 
 
-scopes = ['https://spreadsheets.google.com/feeds',
-          'https://www.googleapis.com/auth/spreadsheets',
-          'https://www.googleapis.com/auth/drives']
+scopes = ['https://www.googleapis.com/auth/spreadsheets']
+
 
 # Use service account credentials for 
 my_credentials = ServiceAccountCredentials.from_json_keyfile_name(filename=service_account_file, scopes=scopes)
