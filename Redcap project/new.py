@@ -1,32 +1,29 @@
-import tkinter as tk
-from tkinter import ttk
+import gspread
+from oauth2client.service_account import ServiceAccountCredentials
+# Replace with your JSON key file path
+service_account_file = 'client_secret.json'
 
-root = tk.Tk()
+# Use a scope that only grants read access to Google 
+scopes = ''
+# # scopes = ['https://spreadsheets.google.com/feeds',
+#           'https://www.googleapis.com/auth/spreadsheets',
+#           'https://www.googleapis.com/auth/drives']
 
-# Create a Treeview widget
-tree = ttk.Treeview(root, columns=("column1", "column2"), show="headings")
-tree.heading("#1", text="Column 1")
-tree.heading("#2", text="Column 2")
+# Use service account credentials for 
+my_credentials = ServiceAccountCredentials.from_json_keyfile_name(filename='client_secret.json')
+# gspread.use_service_account_file(service_account_file, scopes=scopes)
+my_client = gspread.authorize(my_credentials)
+# Open the Google Sheet by its title or URL
+gc = my_client.open('https://docs.google.com/spreadsheets/d/1-J_R3OmEZUa7J8lpOF8aA41eJDVbfL5u565RQ6NyOLU/edit')
 
-# Insert sample data
-for i in range(10):
-    tree.insert("", "end", values=("Value " + str(i), "Value " + str(i)))
+# Choose the worksheet you want to read (optional)
+worksheet = gc.sheet1  # You can access a specific sheet by its title or index
 
-# Configure background color for specific columns
-tree.tag_configure("column1_tag", background="lightblue")
-tree.tag_configure("column2_tag", background="lightgreen")
+# Get all values from the worksheet as a list of lists
+all_values = worksheet.get_all_values()
 
-# Tag all cells in the first column with "column1_tag"
-for i in range(10):
-    tree.tag_configure("cell_tag_" + str(i), background="lightblue")
-    tree.item(tree.get_children()[i], tags=("cell_tag_" + str(i),))
+# Print the contents (as you prefer)
+print(all_values)  # Print the entire list of lists
+# To access specific cells, use indexing: print(all_values[row][column])
 
-# Tag all cells in the second column with "column2_tag"
-# for i in range(10):
-#     tree.tag_configure("cell_tag_" + str(i), background="lightgreen")
-#     tree.item(tree.get_children()[i], tags=("cell_tag_" + str(i),))
-
-# Pack the Treeview widget
-tree.pack(expand=True, fill=tk.BOTH)
-
-root.mainloop()
+# ... (process the data as needed)
