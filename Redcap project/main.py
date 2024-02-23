@@ -4,6 +4,7 @@ from tkinter import ttk
 import tkinter as tk
 from customtkinter import CTk
 from project_setting import projectSetting
+import sheet_loader
 
 
 
@@ -82,7 +83,7 @@ class middleFrame(ctk.CTkFrame):
         self.option = ctk.CTkOptionMenu(self.inner_frame2,values=['Tab 1', 'Tab 2', 'Tab 3', 'Tab 4', 'Tab 5'])
         self.option.grid(row=9, column=0, padx=2, pady=2, sticky='ew')
 
-        self.btn_tabviewer = ctk.CTkButton(self.inner_frame2, text=f'Tab {1}', text_color= ('black', 'white'), fg_color='transparent', command= self.tab_viewer(1))
+        self.btn_tabviewer = ctk.CTkButton(self.inner_frame2, text=f'Plate {sheet_loader.all_values[10][2]}', text_color= ('black', 'white'), fg_color='transparent', command= self.tab_viewer(1))
         self.btn_tabviewer.grid(row=9, column=1, padx=2, pady=2, sticky='ew')
 
         self.btn_tabviewer = ctk.CTkButton(self.inner_frame2, text=f'Tab {2}', fg_color='transparent', command=lambda: self.tab_viewer(2))
@@ -123,8 +124,7 @@ class middleFrame(ctk.CTkFrame):
         # self.inner_inner_frame =ctk.CTkFrame(self.tab_view1)
         # self.inner_inner_frame.place(relx=0.01, rely=0.01, relwidth=0.98, relheight=0.98)
 
-        cols = ([i for i in range(13)])
-        cols[0]=''
+        cols = sheet_loader.all_values[0]
         self.treeview = ttk.Treeview(self.inner_frame2, show='headings', columns=cols )
         self.treeview.grid(row=0, rowspan=9, column =0, padx=10, pady=10, columnspan=13, sticky='nsew')
        # grid(row = 1, rowspan=11, column=0, padx=10, pady=(2,30), sticky="nsew")
@@ -139,21 +139,18 @@ class middleFrame(ctk.CTkFrame):
         values=[i for i in range(13)]
         keys=['A','B','C','D','E','F','H']
         my_dict ={}
-        for key in keys:
-            my_list = []
-            for value in values:
-                if value == 0:
-                    my_list.append(key)
-                else:
-                    my_list.append(key+str(value))
-            my_dict[key] = my_list
+        # for key in keys:
+        #     my_list = []
+        #     for value in values:
+        #         if value == 0:
+        #             my_list.append(key)
+        #         else:
+        #             my_list.append(key+str(value))
+        #     my_dict[key] = my_list
 
         col=0
-        # for key in my_dict.keys():
-        #     for value in my_dict[key]:
-        #         if col == 0:
-        #             self.treeview.insert(parent="", index="end", id=key, text="", values=tuple(my_dict[key][0]), tags=('first_column'))
-        #     self.treeview.insert(parent="", index="end", id=key, text="", values=tuple(my_dict[key][1:]), tags=('green'))
+        for row in sheet_loader.all_values[1:9]:
+            self.treeview.insert(parent="", index="end", text="", values=row)
 
         style = ttk.Style()
         style.theme_use('default')
