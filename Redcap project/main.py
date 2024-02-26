@@ -4,7 +4,7 @@ from tkinter import ttk
 import tkinter as tk
 from customtkinter import CTk
 from project_setting import projectSetting
-import sheet_loader
+# import sheet_loader
 from functools import partial
 import json
 
@@ -87,35 +87,41 @@ class middleFrame(ctk.CTkFrame):
             self.all_sheets = json.load(file)
 
         self.option_value = [f'Plate {sheet[10][2]}' for sheet in self.all_sheets]
+      
 
-        self.option = ctk.CTkOptionMenu(self.inner_frame2,values=self.option_value, command=self.option_selected)
+        self.option = ctk.CTkOptionMenu(self.inner_frame2,values=self.option_value, dynamic_resizing=False, command=self.option_selected)
         self.option.grid(row=9, column=0, padx=2, pady=2, sticky='ew')
-       
+        ctk.CTkComboBox()
+        
+        self.tab_viewer(self.all_sheets[0])
 
         
 
         self.index = 0
 
-        for all_values in self.all_sheets[:4]:
-            self.btn_tabviewer = ctk.CTkButton(self.inner_frame2, text=f'Plate {all_values[10][2]}', text_color= ('black', 'white'), fg_color='transparent', command=partial(self.tab_viewer, all_values))
+        for all_values in self.all_sheets[:5]:
+            self.btn_tabviewer = ctk.CTkButton(self.inner_frame2, width=100, text=f'Plate {all_values[10][2]}', text_color= ('black', 'white'), fg_color='transparent', command=partial(self.tab_viewer, all_values))
             self.btn_tabviewer.grid(row=9, column=self.index+1, padx=2, pady=2, sticky='ew')
             self.index +=1
 
 
 
-        self.btn_next = ctk.CTkButton(self.inner_frame2, text='<', text_color= ('black', 'white'), fg_color='transparent', command=partial(self.display_sheets, 'prev'))
+        self.btn_next = ctk.CTkButton(self.inner_frame2, text='<', width=70, text_color= ('black', 'white'), fg_color='transparent', command=partial(self.display_sheets, 'prev'))
         self.btn_next.grid(row=9, column=6, padx=2, pady=2)
         
-        self.btn_next = ctk.CTkButton(self.inner_frame2, text='>', text_color= ('black', 'white'), fg_color='transparent', command=partial(self.display_sheets,  'next'))
-        self.btn_next.grid(row=9, column=7, padx=2, pady=2)
+        self.btn_next = ctk.CTkButton(self.inner_frame2, text='>', width=70, text_color= ('black', 'white'), fg_color='transparent', command=partial(self.display_sheets,  'next'))
+        self.btn_next.grid(row=9, column=7, pady=2)
 
 
     def display_sheets(self, value):
         if value == 'next':
-            pass
+            if self.index <= 0: self.index = 0
         elif value == 'prev':
-            self.index -=8
-            print('prev')
+            if len(self.all_sheets) == self.index:
+                self.index = self.index + (5-self.index%5)
+            self.index -=10
+
+            print(self.index)
         else:
             self.index = value-1
         
@@ -123,17 +129,22 @@ class middleFrame(ctk.CTkFrame):
         i = 0       
         index_holder = self.index
         if index_holder >= 0:
-            for all_values in self.all_sheets[index_holder:index_holder+4]:
-                self.btn_tabviewer = ctk.CTkButton(self.inner_frame2, text=f'Plate {all_values[10][2]}', text_color= ('black', 'white'), fg_color='transparent', command= partial(self.tab_viewer, all_values))
+            for all_values in self.all_sheets[index_holder:index_holder+5]:
+                self.btn_tabviewer = ctk.CTkButton(self.inner_frame2, text=f'Plate {all_values[10][2]}', width=100, text_color= ('black', 'white'), fg_color='transparent', command= partial(self.tab_viewer, all_values))
                 self.btn_tabviewer.grid(row=9, column=i+1, padx=2, pady=2, sticky='ew')
                 self.index +=1
                 i +=1
-        print(self.index)
+        if len(self.all_sheets) == self.index:
+            remain_column = 5-self.index%5
+            for i in range(remain_column):
+                 self.btn_tabviewer = ctk.CTkButton(self.inner_frame2, text=None, fg_color='transparent')
+                 self.btn_tabviewer.grid(row=9, column=5-i, padx=2, pady=2, sticky='ew')
+
 
     def option_selected(self, choice):
         print(choice[-2:])
         self.display_sheets(int(choice[-2:]))
-
+        self.tab_viewer(self.all_sheets[int(choice[-2:])])
 
 
 
