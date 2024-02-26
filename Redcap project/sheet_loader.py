@@ -1,4 +1,4 @@
-import gspread
+import gspread, json
 from google.oauth2.service_account import Credentials
 
 # Replace with your JSON key file path
@@ -49,4 +49,8 @@ for sheet in worksheets:
 #         if i == j:
 #             key.append(all_values[i][j])
 
-# print(key)
+for i in range(len(all_sheets)):
+    all_sheets[i][0][0]='letter'
+
+with open('data.json', mode='w') as file:
+    json.dump(all_sheets, file)

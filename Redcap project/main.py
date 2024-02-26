@@ -5,6 +5,8 @@ import tkinter as tk
 from customtkinter import CTk
 from project_setting import projectSetting
 import sheet_loader
+from functools import partial
+import json
 
 
 
@@ -80,23 +82,69 @@ class middleFrame(ctk.CTkFrame):
         self.inner_frame2.rowconfigure(tuple(range(9)), weight=1)
         self.inner_frame2.columnconfigure(tuple(range(12)), weight=1)
 
-        self.option = ctk.CTkOptionMenu(self.inner_frame2,values=['Plate 01', 'Plate 02', 'Plate 03', 'Plate 04', 'Plate 05'])
+        self.all_sheets = []
+        with open('data.json', mode='r')  as file:
+            self.all_sheets = json.load(file)
+
+        self.option_value = [f'Plate {sheet[10][2]}' for sheet in self.all_sheets]
+
+        self.option = ctk.CTkOptionMenu(self.inner_frame2,values=self.option_value, command=self.option_selected)
         self.option.grid(row=9, column=0, padx=2, pady=2, sticky='ew')
+       
+
         
-        col = 1
+
+        self.index = 0
+
+        for all_values in self.all_sheets[:4]:
+            self.btn_tabviewer = ctk.CTkButton(self.inner_frame2, text=f'Plate {all_values[10][2]}', text_color= ('black', 'white'), fg_color='transparent', command=partial(self.tab_viewer, all_values))
+            self.btn_tabviewer.grid(row=9, column=self.index+1, padx=2, pady=2, sticky='ew')
+            self.index +=1
 
 
-        self.btn_tabviewer = ctk.CTkButton(self.inner_frame2, text=f'Plate 01', text_color= ('black', 'white'), fg_color='transparent', command=lambda: self.tab_viewer(sheet_loader.all_sheets[0]))
-        self.btn_tabviewer.grid(row=9, column=1, padx=2, pady=2, sticky='ew')
+
+        self.btn_next = ctk.CTkButton(self.inner_frame2, text='<', text_color= ('black', 'white'), fg_color='transparent', command=partial(self.display_sheets, 'prev'))
+        self.btn_next.grid(row=9, column=6, padx=2, pady=2)
         
-        self.btn_tabviewer = ctk.CTkButton(self.inner_frame2, text=f'Plate 02', text_color= ('black', 'white'), fg_color='transparent', command=lambda: self.tab_viewer(sheet_loader.all_sheets[1]))
-        self.btn_tabviewer.grid(row=9, column=2, padx=2, pady=2, sticky='ew')
+        self.btn_next = ctk.CTkButton(self.inner_frame2, text='>', text_color= ('black', 'white'), fg_color='transparent', command=partial(self.display_sheets,  'next'))
+        self.btn_next.grid(row=9, column=7, padx=2, pady=2)
+
+
+    def display_sheets(self, value):
+        if value == 'next':
+            pass
+        elif value == 'prev':
+            self.index -=8
+            print('prev')
+        else:
+            self.index = value-1
         
-        self.btn_tabviewer = ctk.CTkButton(self.inner_frame2, text=f'Plate 03', text_color= ('black', 'white'), fg_color='transparent', command=lambda: self.tab_viewer(sheet_loader.all_sheets[2]))
-        self.btn_tabviewer.grid(row=9, column=3, padx=2, pady=2, sticky='ew')
         
-        self.btn_tabviewer = ctk.CTkButton(self.inner_frame2, text=f'Plate 04', text_color= ('black', 'white'), fg_color='transparent', command=lambda: self.tab_viewer(sheet_loader.all_sheets[3]))
-        self.btn_tabviewer.grid(row=9, column=4, padx=2, pady=2, sticky='ew')
+        i = 0       
+        index_holder = self.index
+        if index_holder >= 0:
+            for all_values in self.all_sheets[index_holder:index_holder+4]:
+                self.btn_tabviewer = ctk.CTkButton(self.inner_frame2, text=f'Plate {all_values[10][2]}', text_color= ('black', 'white'), fg_color='transparent', command= partial(self.tab_viewer, all_values))
+                self.btn_tabviewer.grid(row=9, column=i+1, padx=2, pady=2, sticky='ew')
+                self.index +=1
+                i +=1
+        print(self.index)
+
+    def option_selected(self, choice):
+        print(choice[-2:])
+        self.display_sheets(int(choice[-2:]))
+
+
+
+
+        # self.btn_tabviewer = ctk.CTkButton(self.inner_frame2, text=f'Plate 02', text_color= ('black', 'white'), fg_color='transparent', command=self.tab_viewer(sheet_loader.all_sheets[1]))
+        # self.btn_tabviewer.grid(row=9, column=2, padx=2, pady=2, sticky='ew')
+        
+        # self.btn_tabviewer = ctk.CTkButton(self.inner_frame2, text=f'Plate 03', text_color= ('black', 'white'), fg_color='transparent', command=self.tab_viewer(sheet_loader.all_sheets[2]))
+        # self.btn_tabviewer.grid(row=9, column=3, padx=2, pady=2, sticky='ew')
+        
+        # self.btn_tabviewer = ctk.CTkButton(self.inner_frame2, text=f'Plate 04', text_color= ('black', 'white'), fg_color='transparent', command=self.tab_viewer(sheet_loader.all_sheets[3]))
+        # self.btn_tabviewer.grid(row=9, column=4, padx=2, pady=2, sticky='ew')
 
 
 
@@ -119,11 +167,13 @@ class middleFrame(ctk.CTkFrame):
         # self.inner_inner_frame =ctk.CTkFrame(self.tab_view1)
         # self.inner_inner_frame.place(relx=0.01, rely=0.01, relwidth=0.98, relheight=0.98)
 
-        cols = all_values[0]
-        self.treeview = ttk.Treeview(self.inner_frame2, show='headings', columns=cols )
+        self.treeview = ttk.Treeview(self.inner_frame2, show='headings', columns=self.all_sheets[0][0])
         self.treeview.grid(row=0, rowspan=9, column =0, padx=10, pady=10, columnspan=13, sticky='nsew')
+
+        cols = all_values[0]
+        print(cols)
        # grid(row = 1, rowspan=11, column=0, padx=10, pady=(2,30), sticky="nsew")
-        
+        # self.treeview.heading(cols)
         self.treeview.configure(padding=20, selectmode='extended')
 
         for colname in cols:
@@ -131,7 +181,7 @@ class middleFrame(ctk.CTkFrame):
             self.treeview.heading(colname, text=colname)
         
 
-        values=[i for i in range(13)]
+        values=[i for i in range(13)]  
         keys=['A','B','C','D','E','F','H']
         my_dict ={}
         # for key in keys:
@@ -144,6 +194,7 @@ class middleFrame(ctk.CTkFrame):
         #     my_dict[key] = my_list
 
         col=0
+        
         for row in all_values[1:9]:
             self.treeview.insert(parent="", index="end", text="", values=row)
 
