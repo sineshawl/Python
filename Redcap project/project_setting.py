@@ -1,7 +1,7 @@
 import customtkinter as ctk
 from PIL import Image, ImageTk
 import json, requests
-
+from functools import partial
 from add_project import add_project
 
 
@@ -82,7 +82,7 @@ class projectSetting(ctk.CTkFrame):
 
                 value_index +=1
             counter +=1  
-            self.btn_add = ctk.CTkButton(self.inner_frame, text=None, width=30, fg_color="transparent", image=self.add_image, command=lambda:add_project(self, key))
+            self.btn_add = ctk.CTkButton(self.inner_frame, text=None, width=30, fg_color="transparent", image=self.add_image, command=partial(add_project, self, key))
             self.btn_add.grid(row = counter, column=0, padx=(10,1), pady=1, sticky='nsew')
 
             counter += 1 
