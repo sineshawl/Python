@@ -16,10 +16,11 @@ my_credentials = Credentials.from_service_account_file(filename=service_account_
 my_client = gspread.authorize(my_credentials)
 # Open the Google Sheet by its title or URL
 # my_client.open_by_key('1Ch1RQSdFRA9DKW65blywOPyHnR2G8SPsVPFzo-OPvWI')
-gc = my_client.open_by_url('https://docs.google.com/spreadsheets/d/1H8MV-JCC7OfPY1jt18mISAyYhk7lBI4-GqzvKZCAxkU')
-
+# gc = my_client.open_by_url('https://docs.google.com/spreadsheets/d/1H8MV-JCC7OfPY1jt18mISAyYhk7lBI4-GqzvKZCAxkU')
+dc = my_client.open('1S_Q2iAbMajlHdb6vCSLKuJ_PwmJJ1vTW')
+dc.get_worksheet(1)
 # Choose the worksheet you want to read (optional)
-worksheets = gc.worksheets() 
+worksheets = dc.worksheets() 
 
 # Get all values from the worksheet as a list of lists
 all_sheets = []
@@ -49,8 +50,10 @@ for sheet in worksheets:
 #         if i == j:
 #             key.append(all_values[i][j])
 
-for i in range(len(all_sheets)):
-    all_sheets[i][0][0]='letter'
+# for i in range(len(all_sheets)):
+#     all_sheets[i][0][0]='letter'
 
-with open('data.json', mode='w') as file:
-    json.dump(all_sheets, file)
+# with open('data.json', mode='w') as file:
+#     json.dump(all_sheets, file)
+    
+print(all_sheets)

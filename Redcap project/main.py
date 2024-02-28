@@ -91,7 +91,6 @@ class middleFrame(ctk.CTkFrame):
 
         self.option = ctk.CTkOptionMenu(self.inner_frame2,values=self.option_value, dynamic_resizing=False, command=self.option_selected)
         self.option.grid(row=9, column=0, padx=2, pady=2, sticky='ew')
-        ctk.CTkComboBox()
         
         self.tab_viewer(self.all_sheets[0])
 

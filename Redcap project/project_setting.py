@@ -2,6 +2,8 @@ import customtkinter as ctk
 from PIL import Image, ImageTk
 import json, requests
 
+from add_project import add_project
+
 
 
 
@@ -19,6 +21,7 @@ with open('api_keys.json', mode='r') as file:
 class projectSetting(ctk.CTkFrame):
     def minimize(self):
        self.place(relx=0, rely=0, relwidth=0, relheight=0)
+       
 
 
     def edit_token(self, key, value):
@@ -79,7 +82,7 @@ class projectSetting(ctk.CTkFrame):
 
                 value_index +=1
             counter +=1  
-            self.btn_add = ctk.CTkButton(self.inner_frame, text=None, width=30, fg_color="transparent", image=self.add_image, command=lambda:self.add_token(key))
+            self.btn_add = ctk.CTkButton(self.inner_frame, text=None, width=30, fg_color="transparent", image=self.add_image, command=lambda:add_project(self, key))
             self.btn_add.grid(row = counter, column=0, padx=(10,1), pady=1, sticky='nsew')
 
             counter += 1 
