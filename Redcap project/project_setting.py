@@ -3,6 +3,7 @@ from PIL import Image, ImageTk
 import json, requests
 from functools import partial
 from add_project import add_project
+from edit_project import edit_project
 
 
 
@@ -96,13 +97,13 @@ class projectSetting(ctk.CTkFrame):
             self.lbl_category = ctk.CTkLabel(self.inner_frame, text=key, anchor='w', font=('Helvetica', 12, 'bold'), text_color='#2682E3')
             self.lbl_category.grid(row = counter, column=0, padx=10, pady=5, sticky='ew')
             if project_list[key] != None:
-                for value in project_list[key]:
+                for value, api in zip(project_list[key], api_list[key]):
                     counter +=1
                     value_index = 0
                     self.lbl_project = ctk.CTkLabel(self.inner_frame, text=value, anchor='w')
                     self.lbl_project.grid(row = counter, column=0, padx=(10,1), pady=1, sticky='nsew')
 
-                    self.btn_edit = ctk.CTkButton(self.inner_frame,text=None, width=30, fg_color="transparent",  image=self.edit_image, command =lambda: self.edit_token(key, value_index))
+                    self.btn_edit = ctk.CTkButton(self.inner_frame,text=None, width=30, fg_color="transparent",  image=self.edit_image, command = partial(edit_project, self, key, api, value))
                     self.btn_edit.grid(row = counter, column=1, padx=1, pady=1, sticky='nsew')   
                     
                     self.btn_delete = ctk.CTkButton(self.inner_frame, text=None, width=30, fg_color="transparent", image=self.delete_image)

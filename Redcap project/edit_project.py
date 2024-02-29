@@ -2,10 +2,12 @@ import customtkinter as ctk
 from redcap_project import project_name
 import json
 from PIL import Image
-class add_project(ctk.CTkFrame):
-    def __init__(self, master, key):
+class edit_project(ctk.CTkFrame):
+    def __init__(self, master, key, api, values):
         super().__init__(master)
         self.key = key
+        self.api = api
+        self.project_name = values
         self.place(relx=0.0, rely=0.0, relwidth=1.0, relheight=1.0)
 
         self.frame1 = ctk.CTkFrame(self)
@@ -13,7 +15,7 @@ class add_project(ctk.CTkFrame):
 
        
 
-        self.label1 = ctk.CTkLabel(self.frame1, text='Add Project', text_color='white')
+        self.label1 = ctk.CTkLabel(self.frame1, text=self.project_name, text_color='white')
         self.label1.pack(padx=10, pady=10, expand=True)
 
         self.exit_icon = Image.open('Images/exit.png').resize((20, 20))
