@@ -1,5 +1,5 @@
 import customtkinter as ctk
-# from redcap_project import project_name
+from redcap_project import project_name
 import json
 from PIL import Image
 class add_project(ctk.CTkFrame):
@@ -79,7 +79,7 @@ class add_project(ctk.CTkFrame):
             my_dic = json.load(file)
         with open('api_keys.json' , mode='r') as file:
             my_api_token = json.load(file)
-
+        
 
         if self.option_data_type.get() == 'Layout':
             if self.entry_spread_url.get() == '' or self.entry_spread_url.get() =='URL required' or self.entry_redcap_api.get() == '' or self.entry_folder_id.get() == 'API required':
@@ -102,7 +102,7 @@ class add_project(ctk.CTkFrame):
 
                 dic1['spreadsheet url'] = [spreadsheet_url]
                 dic2['redcap api layout'] = [redcap_api]
-                if self.key in my_dic:
+                if self.key in my_dic and my_dic[self.key] != None:
                      if 'spreadsheet url' in my_dic[self.key][0]:
                         my_dic[self.key][0]['spreadsheet url'].append(spreadsheet_url)
                      if 'redcap api layout' in my_dic[self.key][1]:
@@ -111,14 +111,17 @@ class add_project(ctk.CTkFrame):
                      if self.key in my_api_token:
                          my_api_token[self.key].append(redcap_api)
                      else:
-                         my_api_token[self.key] = redcap_api
+                         my_api_token[self.key] = [redcap_api]
                 else:
                     my_dic[self.key] = [dic1, dic2]
+                    my_api_token[self.key] = [redcap_api]
 
                 with open('project_list.json', mode='w') as file:
                     json.dump(my_dic, file)
                 with open('api_keys.json', mode='w') as file:
                     json.dump(my_api_token, file)
+                    project_name({self.key:redcap_api})
+
         elif self.option_data_type.get() == 'Raw Data(Machine Result)':
             
             if self.entry_folder_id.get() == '' or self.entry_folder_id.get() == 'folder id required' or self.entry_redcap_api.get() == '' or self.entry_folder_id.get() == 'API required':
@@ -138,20 +141,26 @@ class add_project(ctk.CTkFrame):
 
                 dic1['folder id'] = [folder_id]
                 dic2['redcap api raw'] = [redcap_api]
-                if self.key in my_dic:
+                if self.key in my_dic and my_dic[self.key] != None:
                      if 'folder id' in my_dic[self.key][2]:
                         my_dic[self.key][2]['folder id'].append(folder_id)
                      if 'redcap api raw' in my_dic[self.key][3]:
                          my_dic[self.key][3]['redcap api raw'].append(redcap_api)
                      
                      if self.key in my_api_token:   # creating api dictionary to write into api_keys.json
-                         my_api_token[self.key].append(redcap_api)
+                         my_api_token[self.key].append(redcap_api)                      
                      else:
                          my_api_token[self.key] = redcap_api
                 else:
-                    my_dic[self.key] = [dic1, dic2]                
+                    my_dic[self.key] = [dic1, dic2]   
+                    my_api_token[self.key]=redcap_api   
+         
                 with open('project_list.json', mode='w') as file:
                     json.dump(my_dic, file)
+                with open('api_keys.json', mode='w') as file:
+                    json.dump(my_api_token, file)
+                    project_name({self.key:redcap_api})
+ 
 
 
    
