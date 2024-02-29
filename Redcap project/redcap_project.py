@@ -21,10 +21,10 @@ def project_name(my_tokens):
             r =session.post(url,data = data).json()
             project_title = r['project_title']
             print(token)
-            if my_dic != None:
+            if my_dic[project] != None:
                  my_dic[project].append(project_title)
             else:
-                my_dic[project] = project_title
+                my_dic[project] = [project_title]
     with open('api_keys_label.json', mode='w') as file:
         json.dump(my_dic, file)
 
