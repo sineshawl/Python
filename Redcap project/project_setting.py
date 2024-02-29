@@ -26,9 +26,9 @@ class projectSetting(ctk.CTkFrame):
 
     def edit_token(self, key, value):
         self.edit_popup = ctk.CTkInputDialog(text=api_list[key][value], title='Edit API token')
-    def add_token(self, key):
-        self.add_popup = ctk.CTkInputDialog(text='Enter the API token', title='Add new API token', command=lambda:print(self.add_popup.getvar()))
-        # print(self.add_popup.getvar())
+    def add_new_category(self):
+        self.add_popup = ctk.CTkInputDialog(text='Enter Category Name', title='Add new Category')
+       
     def delete_token(self, key, value):
         # self.delete_token = ctk.CTkLabel
         self.edit_popup = ctk.CTkInputDialog(text=api_list[key][value], title='Edit API token')
@@ -86,7 +86,7 @@ class projectSetting(ctk.CTkFrame):
             self.btn_add.grid(row = counter, column=0, padx=(10,1), pady=1, sticky='nsew')
 
             counter += 1 
-        self.btn_add_category = ctk.CTkButton(self.inner_frame, text='Add new Category', width=30, image=self.add_category_image)
+        self.btn_add_category = ctk.CTkButton(self.inner_frame, text='Add new Category', width=30, image=self.add_category_image, command=self.add_new_category)
         self.btn_add_category.grid(row = counter, column=0, padx=(10,1), pady=1, sticky='nsew') 
 
 
