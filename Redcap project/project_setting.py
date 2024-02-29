@@ -16,6 +16,7 @@ with open('api_keys_label.json', mode='r') as file:
 with open('api_keys.json', mode='r') as file:
     api_list = json.load(file)
 
+print(project_list.keys())
 
 
 class projectSetting(ctk.CTkFrame):
@@ -28,7 +29,34 @@ class projectSetting(ctk.CTkFrame):
         self.edit_popup = ctk.CTkInputDialog(text=api_list[key][value], title='Edit API token')
     def add_new_category(self):
         self.add_popup = ctk.CTkInputDialog(text='Enter Category Name', title='Add new Category')
-       
+        category_name = self.add_popup.get_input()
+        if category_name != '':
+            my_api_keys = {}
+            my_api_keys_label = {}
+            my_project_list = {}
+            with open('api_keys.json', mode='r') as file:
+                my_api_keys = json.load(file)
+            with open('api_keys_label.json', mode='r') as file:
+                my_api_keys_label= json.load(file)
+
+            with open('project_list.json', mode='r') as file:
+                my_project_list = json.load(file)
+
+            if (category_name not in my_api_keys)  and (category_name not in my_api_keys_label) and (category_name not in my_project_list):
+                my_api_keys[category_name] = None
+                my_project_list[category_name]=None
+                my_api_keys_label[category_name]=None
+                with open('api_keys.json', mode='w') as file:
+                    json.dump(my_api_keys, file) 
+                with open('api_keys_label.json', mode='w') as file:
+                    json.dump(my_api_keys_label, file)
+                with open('project_list.json', mode='w') as file:
+                    json.dump(my_project_list, file)
+
+            else:
+                print(f'Category {category_name} already exists!')
+
+
     def delete_token(self, key, value):
         # self.delete_token = ctk.CTkLabel
         self.edit_popup = ctk.CTkInputDialog(text=api_list[key][value], title='Edit API token')
@@ -64,7 +92,7 @@ class projectSetting(ctk.CTkFrame):
         self.add_category_icon = Image.open('Images/new-folder.png').resize((20,20))
         self.add_category_image = ctk.CTkImage(self.add_category_icon)
         counter = 0
-
+        print(project_list.keys())
         for key in project_list.keys():
             self.lbl_category = ctk.CTkLabel(self.inner_frame, text=key, anchor='w', font=('Helvetica', 12, 'bold'), text_color='#2682E3')
             self.lbl_category.grid(row = counter, column=0, padx=10, pady=5, sticky='ew')

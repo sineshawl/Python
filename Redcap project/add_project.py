@@ -1,5 +1,5 @@
 import customtkinter as ctk
-from redcap_project import project_name
+# from redcap_project import project_name
 import json
 from PIL import Image
 class add_project(ctk.CTkFrame):
@@ -80,7 +80,7 @@ class add_project(ctk.CTkFrame):
         with open('api_keys.json' , mode='r') as file:
             my_api_token = json.load(file)
 
-            
+
         if self.option_data_type.get() == 'Layout':
             if self.entry_spread_url.get() == '' or self.entry_spread_url.get() =='URL required' or self.entry_redcap_api.get() == '' or self.entry_folder_id.get() == 'API required':
                 if self.entry_spread_url.get() == '':
