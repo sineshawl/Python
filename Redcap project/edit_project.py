@@ -3,11 +3,26 @@ from redcap_project import project_name
 import json
 from PIL import Image
 class edit_project(ctk.CTkFrame):
-    def __init__(self, master, key, api, values):
+    def __init__(self, master, key, api, values, project_detail):
         super().__init__(master)
         self.key = key
         self.api = api
         self.project_name = values
+        self.project_detail = project_detail
+        
+        self.current_spread = 'jjhgf'
+        self.currrent_api = ''
+
+        
+        
+        for spreadsheet, api_token in zip(self.project_detail[0]['spreadsheet url'], self.project_detail[1]['redcap api layout']) :
+            if api_token == self.api:
+                self.current_spread = spreadsheet
+                self.currrent_api =api_token
+            
+        print(self.current_spread)
+        print(self.currrent_api)
+
         self.place(relx=0.0, rely=0.0, relwidth=1.0, relheight=1.0)
 
         self.frame1 = ctk.CTkFrame(self)
@@ -40,6 +55,7 @@ class edit_project(ctk.CTkFrame):
         self.label2 = ctk.CTkLabel(self.frame2, text='Spreadsheet URL')
 
         self.entry_spread_url = ctk.CTkEntry(self.frame2)
+        self.entry_spread_url.insert(0, self.current_spread)
 
         self.label3 = ctk.CTkLabel(self.frame2, text='Folder ID')
 
@@ -48,6 +64,7 @@ class edit_project(ctk.CTkFrame):
         self.label4 = ctk.CTkLabel(self.frame2, text='REDCap API')
 
         self.entry_redcap_api = ctk.CTkEntry(self.frame2)
+        self.entry_redcap_api.insert(0, self.currrent_api)
 
         self.btn_save = ctk.CTkButton(self.frame2, text='Save', command=self.save_project)
 

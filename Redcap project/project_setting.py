@@ -10,12 +10,16 @@ from edit_project import edit_project
 
 project_list= {}
 api_list = {}
+project_detail = {}
 
 with open('api_keys_label.json', mode='r') as file:
     project_list=json.load(file)
 
 with open('api_keys.json', mode='r') as file:
     api_list = json.load(file)
+with open('project_list.json') as file:
+    project_detail = json.load(file)
+
 
 print(project_list.keys())
 
@@ -94,6 +98,7 @@ class projectSetting(ctk.CTkFrame):
         self.add_category_image = ctk.CTkImage(self.add_category_icon)
         counter = 0
         for key in project_list.keys():
+            
             self.lbl_category = ctk.CTkLabel(self.inner_frame, text=key, anchor='w', font=('Helvetica', 12, 'bold'), text_color='#2682E3')
             self.lbl_category.grid(row = counter, column=0, padx=10, pady=5, sticky='ew')
             if project_list[key] != None:
@@ -103,7 +108,7 @@ class projectSetting(ctk.CTkFrame):
                     self.lbl_project = ctk.CTkLabel(self.inner_frame, text=value, anchor='w')
                     self.lbl_project.grid(row = counter, column=0, padx=(10,1), pady=1, sticky='nsew')
 
-                    self.btn_edit = ctk.CTkButton(self.inner_frame,text=None, width=30, fg_color="transparent",  image=self.edit_image, command = partial(edit_project, self, key, api, value))
+                    self.btn_edit = ctk.CTkButton(self.inner_frame,text=None, width=30, fg_color="transparent",  image=self.edit_image, command = partial(edit_project, self, key, api, value, project_detail[key]))
                     self.btn_edit.grid(row = counter, column=1, padx=1, pady=1, sticky='nsew')   
                     
                     self.btn_delete = ctk.CTkButton(self.inner_frame, text=None, width=30, fg_color="transparent", image=self.delete_image)
