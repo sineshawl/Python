@@ -10,18 +10,17 @@ class edit_project(ctk.CTkFrame):
         self.project_name = values
         self.project_detail = project_detail
         
-        self.current_spread = 'jjhgf'
-        self.currrent_api = ''
+        self.current_spread = ''
+        self.current_api = ''
 
         
         
         for spreadsheet, api_token in zip(self.project_detail[0]['spreadsheet url'], self.project_detail[1]['redcap api layout']) :
             if api_token == self.api:
                 self.current_spread = spreadsheet
-                self.currrent_api =api_token
+                self.current_api =api_token
             
-        print(self.current_spread)
-        print(self.currrent_api)
+
 
         self.place(relx=0.0, rely=0.0, relwidth=1.0, relheight=1.0)
 
@@ -64,9 +63,9 @@ class edit_project(ctk.CTkFrame):
         self.label4 = ctk.CTkLabel(self.frame2, text='REDCap API')
 
         self.entry_redcap_api = ctk.CTkEntry(self.frame2)
-        self.entry_redcap_api.insert(0, self.currrent_api)
+        self.entry_redcap_api.insert(0, self.current_api)
 
-        self.btn_save = ctk.CTkButton(self.frame2, text='Save', command=self.save_project)
+        self.btn_save = ctk.CTkButton(self.frame2, text='Save', command=lambda: self.save_project(self.current_spread, self.current_api))
 
     def on_select_data_type(self, choice):
         if choice == 'Layout':
@@ -91,7 +90,8 @@ class edit_project(ctk.CTkFrame):
 
             self.label2.grid_forget()
             self.entry_spread_url.grid_forget()
-    def save_project(self):
+    def save_project(self, current_spread, current_api):
+        print('hello')
         my_dic = {}  
         my_api_token = {}      
         with open('project_list.json', mode='r') as file:
@@ -112,73 +112,75 @@ class edit_project(ctk.CTkFrame):
                 self.entry_redcap_api.configure(text_color='red')
 
             else:
-                print(len(self.entry_redcap_api.get()))
                 spreadsheet_url =self.entry_spread_url.get()
                 redcap_api = self.entry_redcap_api.get()
 
-                dic1 = {}
-                dic2 = {}
 
-                dic1['spreadsheet url'] = [spreadsheet_url]
-                dic2['redcap api layout'] = [redcap_api]
-                if self.key in my_dic and my_dic[self.key] != None:
-                     if 'spreadsheet url' in my_dic[self.key][0]:
-                        my_dic[self.key][0]['spreadsheet url'].append(spreadsheet_url)
-                     if 'redcap api layout' in my_dic[self.key][1]:
-                         my_dic[self.key][1]['redcap api layout'].append(redcap_api)
-
-                     if self.key in my_api_token:
-                         my_api_token[self.key].append(redcap_api)
-                     else:
-                         my_api_token[self.key] = [redcap_api]
-                else:
-                    my_dic[self.key] = [dic1, dic2]
-                    my_api_token[self.key] = [redcap_api]
-
+                index = 0
+                for spreadsheet, api_key in zip(my_dic[self.key][0]['spreadsheet url'], my_dic[self.key][1]['redcap api layout']):
+                    print(spreadsheet)
+                    print(current_api)
+                    if spreadsheet == current_spread and api_key == current_api:
+                        my_dic[self.key][0]['spreadsheet url'][index] = spreadsheet_url
+                        my_dic[self.key][1]['redcap api layout'][index] = redcap_api
+                    index +=1 
+                index = 0
+                for key, values in my_api_token.items():
+                    if key == current_api and values == redcap_api:
+                            my_api_token[key][index] = redcap_api
+                    index +=1
                 with open('project_list.json', mode='w') as file:
                     json.dump(my_dic, file)
                 with open('api_keys.json', mode='w') as file:
                     json.dump(my_api_token, file)
                     project_name({self.key:redcap_api})
 
-        elif self.option_data_type.get() == 'Raw Data(Machine Result)':
+        # elif self.option_data_type.get() == 'Raw Data(Machine Result)':
             
-            if self.entry_folder_id.get() == '' or self.entry_folder_id.get() == 'folder id required' or self.entry_redcap_api.get() == '' or self.entry_folder_id.get() == 'API required':
-                if self.entry_folder_id.get() == '':
-                    self.entry_folder_id.configure(placeholder_text='folder id required', placeholder_text_color='red')
-                if self.entry_redcap_api.get() == '':
-                    self.entry_redcap_api.configure(placeholder_text='API required', placeholder_text_color='red')
-            elif len(self.entry_redcap_api.get()) != 32:
-                self.entry_redcap_api.delete(0, ctk.END)
-                self.entry_redcap_api.insert(0, 'API length should be 32')
-                self.entry_redcap_api.configure(text_color='red')
-            else:
-                folder_id =self.entry_folder_id.get()
-                redcap_api = self.entry_redcap_api.get()
-                dic1 = {}
-                dic2 = {}
+        #     if self.entry_folder_id.get() == '' or self.entry_folder_id.get() == 'folder id required' or self.entry_redcap_api.get() == '' or self.entry_folder_id.get() == 'API required':
+        #         if self.entry_folder_id.get() == '':
+        #             self.entry_folder_id.configure(placeholder_text='folder id required', placeholder_text_color='red')
+        #         if self.entry_redcap_api.get() == '':
+        #             self.entry_redcap_api.configure(placeholder_text='API required', placeholder_text_color='red')
+        #     elif len(self.entry_redcap_api.get()) != 32:
+        #         self.entry_redcap_api.delete(0, ctk.END)
+        #         self.entry_redcap_api.insert(0, 'API length should be 32')
+        #         self.entry_redcap_api.configure(text_color='red')
+        #     else:
+        #         folder_id =self.entry_folder_id.get()
+        #         redcap_api = self.entry_redcap_api.get()
+        #         dic1 = {}
+        #         dic2 = {}
 
-                dic1['folder id'] = [folder_id]
-                dic2['redcap api raw'] = [redcap_api]
-                if self.key in my_dic and my_dic[self.key] != None:
-                     if 'folder id' in my_dic[self.key][2]:
-                        my_dic[self.key][2]['folder id'].append(folder_id)
-                     if 'redcap api raw' in my_dic[self.key][3]:
-                         my_dic[self.key][3]['redcap api raw'].append(redcap_api)
+        #         for folderid, api_key in zip(my_dic[self.key][3]['folder id'], my_dic[self.key][2]['redcap api layout']):
+        #             if folderid == current_spread and api_key == current_api:
+        #                 my_dic[self.key][0]['spreadsheet url'] = spreadsheet_url
+        #                 my_dic[self.key][1]['redcap api layout'] = redcap_api
+        #         for key, values in my_api_token.items():
+        #             if key == current_api and values == redcap_api:
+        #                     my_api_token[key] = redcap_api
+
+        #         dic1['folder id'] = [folder_id]
+        #         dic2['redcap api raw'] = [redcap_api]
+        #         if self.key in my_dic and my_dic[self.key] != None:
+        #              if 'folder id' in my_dic[self.key][2]:
+        #                 my_dic[self.key][2]['folder id'].append(folder_id)
+        #              if 'redcap api raw' in my_dic[self.key][3]:
+        #                  my_dic[self.key][3]['redcap api raw'].append(redcap_api)
                      
-                     if self.key in my_api_token:   # creating api dictionary to write into api_keys.json
-                         my_api_token[self.key].append(redcap_api)                      
-                     else:
-                         my_api_token[self.key] = redcap_api
-                else:
-                    my_dic[self.key] = [dic1, dic2]   
-                    my_api_token[self.key]=redcap_api   
+        #              if self.key in my_api_token:   # creating api dictionary to write into api_keys.json
+        #                  my_api_token[self.key].append(redcap_api)                      
+        #              else:
+        #                  my_api_token[self.key] = redcap_api
+        #         else:
+        #             my_dic[self.key] = [dic1, dic2]   
+        #             my_api_token[self.key]=redcap_api   
          
-                with open('project_list.json', mode='w') as file:
-                    json.dump(my_dic, file)
-                with open('api_keys.json', mode='w') as file:
-                    json.dump(my_api_token, file)
-                    project_name({self.key:redcap_api})
+        #         with open('project_list.json', mode='w') as file:
+        #             json.dump(my_dic, file)
+        #         with open('api_keys.json', mode='w') as file:
+        #             json.dump(my_api_token, file)
+        #             project_name({self.key:redcap_api})
  
 
 

@@ -98,12 +98,12 @@ class middleFrame(ctk.CTkFrame):
         button_text = list(self.key_values.keys())
         
         
-        self.btn_tabviewer = ctk.CTkSegmentedButton(self.inner_frame2, values=button_text, command=self.tab)
+        self.btn_tabviewer = ctk.CTkSegmentedButton(self.inner_frame2, values=button_text, command=lambda value:self.tab_viewer(self.key_values[value] ))
         self.btn_tabviewer.grid(row=9, column=1, columnspan=5, padx=2, pady=2, sticky='ew')
 
 
 
-        self.index = 0
+        self.index = 5
 
         # for all_values in self.all_sheets[:5]:
         #     self.btn_tabviewer = ctk.CTkButton(self.inner_frame2, width=100, text=f'Plate {all_values[10][2]}', text_color= ('black', 'white'), fg_color='transparent', command=partial(self.tab_viewer, all_values))
@@ -115,8 +115,8 @@ class middleFrame(ctk.CTkFrame):
         self.btn_next = ctk.CTkButton(self.inner_frame2, text='<', width=70, text_color= ('black', 'white'), fg_color='transparent', command=partial(self.display_sheets, 'prev'))
         self.btn_next.grid(row=9, column=6, padx=2, pady=2)
         
-        # self.btn_next = ctk.CTkButton(self.inner_frame2, text='>', width=70, text_color= ('black', 'white'), fg_color='transparent', command=partial(self.display_sheets,  'next'))
-        # self.btn_next.grid(row=9, column=7, pady=2)
+        self.btn_next = ctk.CTkButton(self.inner_frame2, text='>', width=70, text_color= ('black', 'white'), fg_color='transparent', command=partial(self.display_sheets,  'next'))
+        self.btn_next.grid(row=9, column=7, pady=2)
 
 
     def display_sheets(self, value):
@@ -171,8 +171,8 @@ class middleFrame(ctk.CTkFrame):
         # self.label = ctk.CTkLabel(self.tab_view1, text=f'Tab 1')
         # self.label.place(relx=0.5, rely=0.5)
     def tab(self, show):
+        print(show)
         self.tab_viewer(self.key_values[show])
-        self.btn_tabviewer.grid(row=9, column=1, columnspan=5, padx=2, pady=2, sticky='ew')
 
 
 
@@ -244,6 +244,7 @@ class middleFrame(ctk.CTkFrame):
 
 
         self.treeview.bind("<Double-1>", self.on_double_click)
+
 
 
     def on_double_click(self, event):
