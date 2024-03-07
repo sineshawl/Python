@@ -80,7 +80,7 @@ class middleFrame(ctk.CTkFrame):
 
 
         self.inner_frame2.rowconfigure(tuple(range(9)), weight=1)
-        self.inner_frame2.columnconfigure(tuple(range(12)), weight=1)
+        self.inner_frame2.columnconfigure(tuple(range(13)), weight=1)
 
         self.all_sheets = []
         with open('data.json', mode='r')  as file:
@@ -99,7 +99,7 @@ class middleFrame(ctk.CTkFrame):
         
         
         self.btn_tabviewer = ctk.CTkSegmentedButton(self.inner_frame2, values=button_text, command=lambda value:self.tab_viewer(self.key_values[value] ))
-        self.btn_tabviewer.grid(row=9, column=1, columnspan=5, padx=2, pady=2, sticky='ew')
+        self.btn_tabviewer.grid(row=9, column=1, columnspan=10, padx=2, pady=2, sticky='ew')
 
 
 
@@ -113,10 +113,10 @@ class middleFrame(ctk.CTkFrame):
 
 
         self.btn_next = ctk.CTkButton(self.inner_frame2, text='<', width=70, text_color= ('black', 'white'), fg_color='transparent', command=partial(self.display_sheets, 'prev'))
-        self.btn_next.grid(row=9, column=6, padx=2, pady=2)
+        self.btn_next.grid(row=9, column=11, padx=2, pady=2)
         
         self.btn_next = ctk.CTkButton(self.inner_frame2, text='>', width=70, text_color= ('black', 'white'), fg_color='transparent', command=partial(self.display_sheets,  'next'))
-        self.btn_next.grid(row=9, column=7, pady=2)
+        self.btn_next.grid(row=9, column=12, pady=2)
 
 
     def display_sheets(self, value):
@@ -177,22 +177,11 @@ class middleFrame(ctk.CTkFrame):
 
 
     def tab_viewer(self, all_values):
-
-        # color = ['red', 'green', 'yellow', 'blue', 'cyan']
-        # self.tab_view1 = ctk.CTkTabview(self.inner_frame2)
-        # self.tab_view1.place(relx=0.02, rely=0.02, relwidth=0.96, relheight=0.90)
-
-        # self.tab_view1.grid(row=0, rowspan=9, column =0, padx=2, pady=2, columnspan=13, sticky='nsew')
-
-        # self.inner_inner_frame =ctk.CTkFrame(self.tab_view1)
-        # self.inner_inner_frame.place(relx=0.01, rely=0.01, relwidth=0.98, relheight=0.98)
-
-        self.treeview = ttk.Treeview(self.inner_frame2, show='headings', columns=self.all_sheets[0][0])
-        self.treeview.grid(row=0, rowspan=9, column =0, padx=10, pady=10, columnspan=13, sticky='nsew')
+        self.treeview = ttk.Treeview(self.inner_frame2, show='headings', columns=all_values[0])
+        self.treeview.grid(row=0, rowspan=9, column =0, padx=2, pady=2, columnspan=13, sticky='nsew')
 
         cols = all_values[0]
-       # grid(row = 1, rowspan=11, column=0, padx=10, pady=(2,30), sticky="nsew")
-        # self.treeview.heading(cols)
+
         self.treeview.configure(padding=20, selectmode='extended')
 
         for colname in cols:
@@ -203,14 +192,7 @@ class middleFrame(ctk.CTkFrame):
         values=[i for i in range(13)]  
         keys=['A','B','C','D','E','F','H']
         my_dict ={}
-        # for key in keys:
-        #     my_list = []
-        #     for value in values:
-        #         if value == 0:
-        #             my_list.append(key)
-        #         else:
-        #             my_list.append(key+str(value))
-        #     my_dict[key] = my_list
+
 
         col=0
         
@@ -219,30 +201,11 @@ class middleFrame(ctk.CTkFrame):
 
         style = ttk.Style()
         style.theme_use('default')
-        # self.treeview.tag_bind()
 
-
-        # Apply the custom style to the Treeview widget
-        # self.treeview.configure(style="Custom.Treeview")
-        # Customize the Treeview widget style
-        style.configure("Treeview", background="#646668", fieldbackground="#646668", foreground="white")
-
-        # Change the font of the Treeview widget
-        # style.configure("Treeview", font=("Helvetica", 12))
-
-        # # Change the background color of the Treeview widget
-        # style.configure("Treeview", background="lightgray")
-
-        # # Change the foreground color of the Treeview widget
-        # style.configure("Treeview", foreground="black")
-
-        # Change the row height of the Treeview widget
         style.configure("Treeview", rowheight=40)
 
         # Change the color of the selected item
         style.map("Treeview", background=[("selected", "#1466BD")], foreground=[("selected", "white")])
-
-
         self.treeview.bind("<Double-1>", self.on_double_click)
 
 
