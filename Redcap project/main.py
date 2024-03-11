@@ -103,7 +103,7 @@ class middleFrame(ctk.CTkFrame):
 
 
 
-        self.index = 6
+        self.index = 0
 
         # for all_values in self.all_sheets[:5]:
         #     self.btn_tabviewer = ctk.CTkButton(self.inner_frame2, width=100, text=f'Plate {all_values[10][2]}', text_color= ('black', 'white'), fg_color='transparent', command=partial(self.tab_viewer, all_values))
@@ -121,30 +121,32 @@ class middleFrame(ctk.CTkFrame):
 
     def display_sheets(self, value):
         if value == 'next':
+            self.index +=6
+            
             if self.index <= 0: self.index = 0
         elif value == 'prev':
-            if len(self.all_sheets) == self.index:
-                self.index = self.index + (6-self.index%6)
-            self.index -=12
+            if self.index >= 6:
+                self.index +=-6
+        
+        key_val = {f'plate {all_values[10][2]}':all_values for all_values in self.all_sheets[self.index:self.index+6]}
+        btn_text = list(key_val.keys())
 
-            print(self.index)
-        else:
-            self.index = value-1
+        self.btn_tabviewer = ctk.CTkSegmentedButton(self.inner_frame2, values=btn_text, command=lambda value:self.tab_viewer(key_val[value] ))
+        self.btn_tabviewer.grid(row=9, column=1, padx=2, pady=2, sticky='ew')
         
-        
-        i = 0       
-        index_holder = self.index
-        if index_holder >= 0:
-            for all_values in self.all_sheets[index_holder:index_holder+6]:
-                self.btn_tabviewer = ctk.CTkButton(self.inner_frame2, text=f'Plate {all_values[10][2]}', width=100, text_color= ('black', 'white'), fg_color='transparent', command= partial(self.tab_viewer, all_values))
-                self.btn_tabviewer.grid(row=9, column=i+1, padx=2, pady=2, sticky='ew')
-                self.index +=1
-                i +=1
-        if len(self.all_sheets) == self.index:
-            remain_column = 6-self.index%6
-            for i in range(remain_column):
-                 self.btn_tabviewer = ctk.CTkButton(self.inner_frame2, text=None, fg_color='transparent')
-                 self.btn_tabviewer.grid(row=9, column=5-i, padx=2, pady=2, sticky='ew')
+        # i = 0       
+        # index_holder = self.index
+        # if index_holder >= 0:
+        #     for all_values in self.all_sheets[index_holder:index_holder+6]:
+        #         self.btn_tabviewer = ctk.CTkButton(self.inner_frame2, text=f'Plate {all_values[10][2]}', width=100, text_color= ('black', 'white'), fg_color='transparent', command= partial(self.tab_viewer, all_values))
+        #         self.btn_tabviewer.grid(row=9, column=i+1, padx=2, pady=2, sticky='ew')
+        #         self.index +=1
+        #         i +=1
+        # if len(self.all_sheets) == self.index:
+        #     remain_column = 6-self.index%6
+        #     for i in range(remain_column):
+        #          self.btn_tabviewer = ctk.CTkButton(self.inner_frame2, text=None, fg_color='transparent')
+        #          self.btn_tabviewer.grid(row=9, column=5-i, padx=2, pady=2, sticky='ew')
 
 
     def option_selected(self, choice):
