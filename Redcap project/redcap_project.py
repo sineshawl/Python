@@ -22,7 +22,8 @@ def project_name(my_tokens):
             project_title = r['project_title']
             print(token)
             if my_dic[project] != None:
-                 my_dic[project].append(project_title)
+                 if project_title not in my_dic[project]: 
+                    my_dic[project].append(project_title)
             else:
                 my_dic[project] = [project_title]
     with open('api_keys_label.json', mode='w') as file:

@@ -98,7 +98,7 @@ class middleFrame(ctk.CTkFrame):
         button_text = list(self.key_values.keys())
         
         
-        self.btn_tabviewer = ctk.CTkSegmentedButton(self.inner_frame2, values=button_text, command=lambda value:self.tab_viewer(self.key_values[value] ))
+        self.btn_tabviewer = ctk.CTkSegmentedButton(self.inner_frame2, values=button_text, text_color=('black','white'), command=lambda value:self.tab_viewer(self.key_values[value] ))
         self.btn_tabviewer.grid(row=9, column=1, padx=2, pady=2, sticky='ew')
 
 
@@ -131,7 +131,7 @@ class middleFrame(ctk.CTkFrame):
         key_val = {f'plate {all_values[10][2]}':all_values for all_values in self.all_sheets[self.index:self.index+6]}
         btn_text = list(key_val.keys())
 
-        self.btn_tabviewer = ctk.CTkSegmentedButton(self.inner_frame2, values=btn_text, command=lambda value:self.tab_viewer(key_val[value] ))
+        self.btn_tabviewer = ctk.CTkSegmentedButton(self.inner_frame2, values=btn_text, text_color=('black', 'white'), command=lambda value:self.tab_viewer(key_val[value] ))
         self.btn_tabviewer.grid(row=9, column=1, padx=2, pady=2, sticky='ew')
         
         # i = 0       
@@ -263,15 +263,37 @@ class rightFrame(ctk.CTkFrame):
 
         self.rowconfigure((0, 1, 2, 3, 4, 5, 6, 7), weight=1)
         self.columnconfigure(0, weight=1)
+        self.project_list = {}
+        with open('api_keys_label.json', mode='r') as file:
+            self.project_list = json.load(file)
 
-        self.combo_data_category = ctk.CTkComboBox(self, values=['Select Data Category','Extraction Layout', 'Assay Layout', 'Raw Data'])
+        project_key =[key for key in self.project_list.keys()]
+        
+        combo_box_value = ['Select Project Folder']
+        combo_box_value.extend(project_key)
+        print(project_key)
+        self.combo_data_category = ctk.CTkComboBox(self, values=combo_box_value, command=self.project_selected)
         self.combo_data_category.grid(row=0, column=0, padx=5, pady=5, sticky='ew')
 
-        self.combo_google_sheet_url = ctk.CTkComboBox(self, values=['Google Sheet Url','Dark', 'Light'])
-        self.combo_google_sheet_url.grid(row=1, column=0, padx=5, pady=5, sticky='ew')
+        # self.combo_google_sheet_url = ctk.CTkComboBox(self, values=['Google Sheet Url','Dark', 'Light'])
+        # self.combo_google_sheet_url.grid(row=1, column=0, padx=5, pady=5, sticky='ew')
 
-        self.combo_redcap_project = ctk.CTkComboBox(self, values=['Redcap Project'])
-        self.combo_redcap_project.grid(row=2, column=0, padx=5, pady=5, sticky='ew')
+
+        # self.combo_redcap_project = ctk.CTkComboBox(self)
+        # self.combo_redcap_project.grid(row=2, column=0, padx=5, pady=5, sticky='ew')
+        # self.combo_redcap_project.grid_forget()
+    def project_selected(self, choice):
+        project_for_selected_key = [project for project in self.project_list[choice]]
+        
+
+        self.combo_project_list = ctk.CTkComboBox(self, values=project_for_selected_key, command=self.data_type_selected)
+        self.combo_project_list.grid(row=1, column=0, padx=5, pady=5, sticky='ew')
+        # self.combo_redcap_project.grid_forget()
+    def data_type_selected(self, choice):
+        type_of_data = ['Select Data Type', 'Layout', 'Raw-Antigen', 'Raw-Antibody', 'Raw-qPCR', 'Raw-Digital']
+        self.combo_data_type = ctk.CTkComboBox(self, values=type_of_data)
+        self.combo_data_type.grid(row=2, column=0, padx=5, pady=5, sticky='ew')
+        # self.combo_redcap_project.configure(values=project_for_selected_key)
 
 class App(ctk.CTk):
     def __init__(self):
