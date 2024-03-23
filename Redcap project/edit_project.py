@@ -3,33 +3,16 @@ from redcap_project import project_name
 import json
 from PIL import Image
 class edit_project(ctk.CTkFrame):
-    def __init__(self, master, key, api, values, project_detail):
+    def __init__(self, master, project_id):
         super().__init__(master)
-        self.key = key
-        self.api = api
-        self.project_name = values
-        self.project_detail = project_detail
-        
-        self.current_spread = ''
-        self.current_api = ''
-
-        
-        
-        for spreadsheet, api_token in zip(self.project_detail[0]['spreadsheet url'], self.project_detail[1]['redcap api layout']) :
-            if api_token == self.api:
-                self.current_spread = spreadsheet
-                self.current_api =api_token
-            
-
-
         self.place(relx=0.0, rely=0.0, relwidth=1.0, relheight=1.0)
+        
+        project_id = project_id -1 
 
         self.frame1 = ctk.CTkFrame(self)
         self.frame1.place(relx=0.02, rely=0.02, relwidth=0.96, relheight=0.17)
 
-       
-
-        self.label1 = ctk.CTkLabel(self.frame1, text=self.project_name, text_color='white')
+        self.label1 = ctk.CTkLabel(self.frame1, text='Edit Project', text_color='white')
         self.label1.pack(padx=10, pady=10, expand=True)
 
         self.exit_icon = Image.open('Images/exit.png').resize((20, 20))
@@ -38,149 +21,131 @@ class edit_project(ctk.CTkFrame):
         self.btn_exit = ctk.CTkButton(self.frame1, text=None,width=20, fg_color="transparent", image=self.exit_image, command=lambda:self.destroy())
         self.btn_exit.place(relx=.93, rely=.01, relwidth=.07, relheight=.5)
 
+        project_list = {}
+        with open('project_list.json', mode='r') as file:
+            project_list = json.load(file)
+
+        redcap_folder = project_list['redcap_folder_name'][project_id]
+        redcap_project_name =  project_list['redcap_project_name'][project_id]
+        redcap_api =  project_list['redcap_api'][project_id]
+        spreadsheet_url =  project_list['spreadsheet_url'][project_id]
+        google_drive_id =  project_list['google_drive_id'][project_id]
+        structure_of_data = project_list['structure_of_data'][project_id]
+       
+        
+
 
         self.frame2 = ctk.CTkFrame(self)
         self.frame2.place(relx=0.02, rely=0.22, relwidth=0.96, relheight=0.76)
 
-
         self.frame2.columnconfigure((0,1), weight=1)
-        self.frame2.rowconfigure((0, 1, 2, 3), weight=1)
-        
+        self.frame2.rowconfigure((0, 1, 2, 3, 4,5,6), weight=1)
+       
+        self.label_redcap_folder = ctk.CTkLabel(self.frame2, text='REDCap Folder Name')
+        self.label_redcap_folder.grid(row=0, column=0, ipadx=10, sticky='we')
 
+        self.entry_redcap_folder = ctk.CTkEntry(self.frame2, placeholder_text=redcap_folder)
+        self.entry_redcap_folder.grid(row=0, column=1, sticky='we')
 
-        self.option_data_type = ctk.CTkOptionMenu(self.frame2, values=['Select Data Type','Layout', 'Raw Data(Machine Result)'], command=self.on_select_data_type) 
-        self.option_data_type.grid(row = 0, column=0, columnspan=2)
+        self.label_redcap_project = ctk.CTkLabel(self.frame2, text='REDCap Project Name')
+        self.label_redcap_project.grid(row=1, column=0)
 
-        self.label2 = ctk.CTkLabel(self.frame2, text='Spreadsheet URL')
+        self.entry_redcap_project = ctk.CTkEntry(self.frame2, placeholder_text=redcap_project_name)
+        self.entry_redcap_project.grid(row=1, column=1, sticky='we')
 
-        self.entry_spread_url = ctk.CTkEntry(self.frame2)
-        self.entry_spread_url.insert(0, self.current_spread)
+        self.label_redcap_api = ctk.CTkLabel(self.frame2, text='REDCap API')
+        self.label_redcap_api.grid(row=2, column=0)
 
-        self.label3 = ctk.CTkLabel(self.frame2, text='Folder ID')
+        self.entry_redcap_api = ctk.CTkEntry(self.frame2, placeholder_text=redcap_api)
+        self.entry_redcap_api.grid(row=2, column=1, sticky='we')
 
-        self.entry_folder_id = ctk.CTkEntry(self.frame2)
+        self.option_data_type = ctk.CTkOptionMenu(self.frame2, values=['Select Data Structure','Layout', 'Antigen', 'Antibody', 'qPCR', 'Digital'], variable=structure_of_data, command=self.on_select_data_type) 
+        self.option_data_type.grid(row = 3, column=0)
 
-        self.label4 = ctk.CTkLabel(self.frame2, text='REDCap API')
+        self.label_spreadsheet_url = ctk.CTkLabel(self.frame2, text='Google Spreadsheet URL')
 
-        self.entry_redcap_api = ctk.CTkEntry(self.frame2)
-        self.entry_redcap_api.insert(0, self.current_api)
+        self.entry_spreadsheet_url = ctk.CTkEntry(self.frame2)
 
-        self.btn_save = ctk.CTkButton(self.frame2, text='Save', command=lambda: self.save_project(self.current_spread, self.current_api))
+        self.label_google_drive_id = ctk.CTkLabel(self.frame2, text='Google Drive ID')
+
+        self.entry_google_drive_id = ctk.CTkEntry(self.frame2)
+
+        self.btn_save = ctk.CTkButton(self.frame2, text='Save', command=self.save_project)
 
     def on_select_data_type(self, choice):
         if choice == 'Layout':
-            self.label2.grid(row=1, column=0, sticky='ew')
-            self.entry_spread_url.grid(row=1, column=1, sticky='ew')
-            self.label4.grid(row=2, column=0, sticky='ew')
-            self.entry_redcap_api.grid(row=2, column=1, sticky='ew')        
-            self.btn_save.grid(row=3, column=1)
+            self.label_spreadsheet_url.grid(row=4, column=0, sticky='ew')
+            self.entry_spreadsheet_url.grid(row=4, column=1, sticky='ew')
+            self.btn_save.grid(row=5, column=1)
 
-            self.entry_redcap_api.configure(placeholder_text='')
+            # self.entry_redcap_api.configure(placeholder_text='')
+            self.label_google_drive_id.grid_forget()
+            self.entry_google_drive_id.grid_forget()
+        elif choice != 'Layout' and choice != 'Select Data Structure':
+            self.label_google_drive_id.grid(row=4, column=0, sticky='ew')
+            self.entry_google_drive_id.grid(row=4, column=1, sticky='ew')
+            self.btn_save.grid(row=5, column=1)
 
-            self.entry_folder_id.grid_forget()
-            self.label3.grid_forget()
-        elif choice == 'Raw Data(Machine Result)':
-            self.label3.grid(row=1, column=0, sticky='ew')
-            self.entry_folder_id.grid(row=1, column=1, sticky='ew')
-            self.label4.grid(row=2, column=0, sticky='ew')
-            self.entry_redcap_api.grid(row=2, column=1, sticky='ew')        
-            self.btn_save.grid(row=3, column=1)
-            self.entry_redcap_api.configure(placeholder_text='')
+            self.label_spreadsheet_url.grid_forget()
+            self.entry_spreadsheet_url.grid_forget()
+    def save_project(self):
 
+        redcap_folder = self.entry_redcap_folder.get()
+        redcap_project_name = self.entry_redcap_project.get()
+        redcap_api = self.entry_redcap_api.get()
+        spreadsheet_url = self.entry_spreadsheet_url.get()
+        google_drive_id = self.entry_google_drive_id.get()
+        structure_of_data =self.option_data_type.get() 
 
-            self.label2.grid_forget()
-            self.entry_spread_url.grid_forget()
-    def save_project(self, current_spread, current_api):
-        print('hello')
-        my_dic = {}  
-        my_api_token = {}      
+        project_list = {}  
         with open('project_list.json', mode='r') as file:
-            my_dic = json.load(file)
-        with open('api_keys.json' , mode='r') as file:
-            my_api_token = json.load(file)
+            project_list = json.load(file)
         
+        # check if the form is blank
+        if redcap_folder == '' or redcap_project_name == '' or redcap_api == '':
+            if redcap_folder == '':
+                self.entry_redcap_folder.configure(placeholder_text='REDCap folder name required', placeholder_text_color='red')
+            if redcap_project_name == '':
+                self.entry_redcap_project.configure(placeholder_text='REDCap project name required', placeholder_text_color='red')
+            if redcap_api == '':
+                self.entry_redcap_api.configure(placeholder_text='REDCap API name required', placeholder_text_color='red')
+ 
+        elif self.option_data_type.get() == 'Layout':
+            if spreadsheet_url == '' :
+                self.entry_spreadsheet_url.configure(placeholder_text='Spreadsheet URL required', placeholder_text_color='red')
+            # elif len(self.entry_redcap_api.get()) != 32:
+            #     self.entry_redcap_api.delete(0, ctk.END)
+            #     self.entry_redcap_api.insert(0, 'API length should be 32')
+            #     self.entry_redcap_api.configure(text_color='red')
+            else: 
+                project_list['project_id'].append(len(project_list['project_id'])+1)           
+                project_list['redcap_folder_name'].append(redcap_folder)
+                project_list['redcap_project_name'].append(redcap_project_name)
+                project_list['redcap_api'].append(redcap_api)
+                project_list['structure_of_data'].append(structure_of_data)
+                project_list['spreadsheet_url'].append(spreadsheet_url)
+                project_list['google_drive_id'].append('None')
 
-        if self.option_data_type.get() == 'Layout':
-            if self.entry_spread_url.get() == '' or self.entry_spread_url.get() =='URL required' or self.entry_redcap_api.get() == '' or self.entry_folder_id.get() == 'API required':
-                if self.entry_spread_url.get() == '':
-                    self.entry_spread_url.configure(placeholder_text='URL required', placeholder_text_color='red')
-                if self.entry_redcap_api.get() == '':
-                    self.entry_redcap_api.configure(placeholder_text='API required', placeholder_text_color='red')
-            elif len(self.entry_redcap_api.get()) != 32:
-                self.entry_redcap_api.delete(0, ctk.END)
-                self.entry_redcap_api.insert(0, 'API length should be 32')
-                self.entry_redcap_api.configure(text_color='red')
-
-            else:
-                spreadsheet_url =self.entry_spread_url.get()
-                redcap_api = self.entry_redcap_api.get()
-
-
-                index = 0
-                for spreadsheet, api_key in zip(my_dic[self.key][0]['spreadsheet url'], my_dic[self.key][1]['redcap api layout']):
-                    print(spreadsheet)
-                    print(current_api)
-                    if spreadsheet == current_spread and api_key == current_api:
-                        my_dic[self.key][0]['spreadsheet url'][index] = spreadsheet_url
-                        my_dic[self.key][1]['redcap api layout'][index] = redcap_api
-                    index +=1 
-                index = 0
-                for key, values in my_api_token.items():
-                    if key == current_api and values == redcap_api:
-                            my_api_token[key][index] = redcap_api
-                    index +=1
                 with open('project_list.json', mode='w') as file:
-                    json.dump(my_dic, file)
-                with open('api_keys.json', mode='w') as file:
-                    json.dump(my_api_token, file)
-                    project_name({self.key:redcap_api})
+                    json.dump(project_list, file)
+                # project_name({self.key:redcap_api})
 
-        # elif self.option_data_type.get() == 'Raw Data(Machine Result)':
+        elif structure_of_data != 'Layout':
             
-        #     if self.entry_folder_id.get() == '' or self.entry_folder_id.get() == 'folder id required' or self.entry_redcap_api.get() == '' or self.entry_folder_id.get() == 'API required':
-        #         if self.entry_folder_id.get() == '':
-        #             self.entry_folder_id.configure(placeholder_text='folder id required', placeholder_text_color='red')
-        #         if self.entry_redcap_api.get() == '':
-        #             self.entry_redcap_api.configure(placeholder_text='API required', placeholder_text_color='red')
-        #     elif len(self.entry_redcap_api.get()) != 32:
-        #         self.entry_redcap_api.delete(0, ctk.END)
-        #         self.entry_redcap_api.insert(0, 'API length should be 32')
-        #         self.entry_redcap_api.configure(text_color='red')
-        #     else:
-        #         folder_id =self.entry_folder_id.get()
-        #         redcap_api = self.entry_redcap_api.get()
-        #         dic1 = {}
-        #         dic2 = {}
-
-        #         for folderid, api_key in zip(my_dic[self.key][3]['folder id'], my_dic[self.key][2]['redcap api layout']):
-        #             if folderid == current_spread and api_key == current_api:
-        #                 my_dic[self.key][0]['spreadsheet url'] = spreadsheet_url
-        #                 my_dic[self.key][1]['redcap api layout'] = redcap_api
-        #         for key, values in my_api_token.items():
-        #             if key == current_api and values == redcap_api:
-        #                     my_api_token[key] = redcap_api
-
-        #         dic1['folder id'] = [folder_id]
-        #         dic2['redcap api raw'] = [redcap_api]
-        #         if self.key in my_dic and my_dic[self.key] != None:
-        #              if 'folder id' in my_dic[self.key][2]:
-        #                 my_dic[self.key][2]['folder id'].append(folder_id)
-        #              if 'redcap api raw' in my_dic[self.key][3]:
-        #                  my_dic[self.key][3]['redcap api raw'].append(redcap_api)
-                     
-        #              if self.key in my_api_token:   # creating api dictionary to write into api_keys.json
-        #                  my_api_token[self.key].append(redcap_api)                      
-        #              else:
-        #                  my_api_token[self.key] = redcap_api
-        #         else:
-        #             my_dic[self.key] = [dic1, dic2]   
-        #             my_api_token[self.key]=redcap_api   
+            if google_drive_id == '':
+                self.entry_folder_id.configure(placeholder_text='folder id required', placeholder_text_color='red')
+            else:
+                project_list['project_id'].append(len(project_list['project_id'])+1)           
+                project_list['redcap_folder_name'].append(redcap_folder)
+                project_list['redcap_project_name'].append(redcap_project_name)
+                project_list['redcap_api'].append(redcap_api)
+                project_list['structure_of_data'].append(structure_of_data)
+                project_list['spreadsheet_url'].append('None')
+                project_list['google_drive_id'].append(google_drive_id)
          
-        #         with open('project_list.json', mode='w') as file:
-        #             json.dump(my_dic, file)
-        #         with open('api_keys.json', mode='w') as file:
-        #             json.dump(my_api_token, file)
-        #             project_name({self.key:redcap_api})
+                with open('project_list.json', mode='w') as file:
+                    json.dump(project_list, file)
+                    # project_name({self.key:redcap_api})
  
 
 

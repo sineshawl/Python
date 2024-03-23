@@ -74,22 +74,23 @@ class projectSetting(ctk.CTkFrame):
             self.lbl_category = ctk.CTkLabel(self.inner_frame, text=key, anchor='w', font=('Helvetica', 12, 'bold'), text_color='#2682E3')
             self.lbl_category.grid(row = counter, column=0, padx=10, pady=5, sticky='ew')
             if project_list[key] != None:
-                for value, api in zip(project_list[key]['redcap_project_name'], project_list[key]['redcap_api']):
+                for value, project_id in zip(project_list[key]['redcap_project_name'], project_list[key]['project_id']):
+
                     counter +=1
                     value_index = 0
                     self.lbl_project = ctk.CTkLabel(self.inner_frame, text=value, anchor='w')
                     self.lbl_project.grid(row = counter, column=0, padx=(10,1), pady=1, sticky='nsew')
 
-                    self.btn_edit = ctk.CTkButton(self.inner_frame,text=None, width=30, fg_color="transparent",  image=self.edit_image)
+                    self.btn_edit = ctk.CTkButton(self.inner_frame,text=None, width=30, fg_color="transparent",  image=self.edit_image , command= partial(edit_project, self, project_id))
                     self.btn_edit.grid(row = counter, column=1, padx=1, pady=1, sticky='nsew')   
-                    #  command = partial(edit_project, self, key, api, value, project_detail[key])
+                    #  command = partial(edit_project, self, project_id, api, value, project_detail[key])
                     self.btn_delete = ctk.CTkButton(self.inner_frame, text=None, width=30, fg_color="transparent", image=self.delete_image)
                     self.btn_delete.grid(row = counter, column=2, padx=1, pady=1, sticky='nsew') 
 
                     value_index +=1
             counter +=1  
             self.btn_add = ctk.CTkButton(self.inner_frame, text=None, width=30, fg_color="transparent", image=self.add_image, command=partial(add_project, self, key))
-            self.btn_add.grid(row = counter, column=0, padx=(10,1), pady=1, sticky='nsew')
+            self.btn_add.grid(row = counter, column=0, columnspan =3, padx=(10,1), pady=1, sticky='nsew')
 
             counter += 1 
 
