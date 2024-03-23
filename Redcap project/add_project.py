@@ -22,56 +22,59 @@ class add_project(ctk.CTkFrame):
         self.btn_exit = ctk.CTkButton(self.frame1, text=None,width=20, fg_color="transparent", image=self.exit_image, command=lambda:self.destroy())
         self.btn_exit.place(relx=.93, rely=.01, relwidth=.07, relheight=.5)
 
-
         self.frame2 = ctk.CTkFrame(self)
         self.frame2.place(relx=0.02, rely=0.22, relwidth=0.96, relheight=0.76)
 
-
         self.frame2.columnconfigure((0,1), weight=1)
-        self.frame2.rowconfigure((0, 1, 2, 3), weight=1)
-        
+        self.frame2.rowconfigure((0, 1, 2, 3, 4,5,6), weight=1)
+       
+        self.label_redcap_folder = ctk.CTkLabel(self.frame2, text='REDCap Folder Name')
+        self.label_redcap_folder.grid(row=0, column=0, ipadx=10, sticky='we')
 
+        self.entry_redcap_folder = ctk.CTkEntry(self.frame2)
+        self.entry_redcap_folder.grid(row=0, column=1, sticky='we')
 
-        self.option_data_type = ctk.CTkOptionMenu(self.frame2, values=['Select Data Type','Layout', 'Raw Data(Machine Result)'], command=self.on_select_data_type) 
-        self.option_data_type.grid(row = 0, column=0, columnspan=2)
+        self.label_redcap_project = ctk.CTkLabel(self.frame2, text='REDCap Project Name')
+        self.label_redcap_project.grid(row=1, column=0)
 
-        self.label2 = ctk.CTkLabel(self.frame2, text='Spreadsheet URL')
+        self.entry_redcap_project = ctk.CTkEntry(self.frame2)
+        self.entry_redcap_project.grid(row=1, column=1, sticky='we')
 
-        self.entry_spread_url = ctk.CTkEntry(self.frame2)
-
-        self.label3 = ctk.CTkLabel(self.frame2, text='Folder ID')
-
-        self.entry_folder_id = ctk.CTkEntry(self.frame2)
-
-        self.label4 = ctk.CTkLabel(self.frame2, text='REDCap API')
+        self.label_redcap_api = ctk.CTkLabel(self.frame2, text='REDCap API')
+        self.label_redcap_api.grid(row=2, column=0)
 
         self.entry_redcap_api = ctk.CTkEntry(self.frame2)
+        self.entry_redcap_api.grid(row=2, column=1, sticky='we')
+
+        self.option_data_type = ctk.CTkOptionMenu(self.frame2, values=['Select Data Structure','Layout', 'Antigen', 'Antibody', 'qPCR', 'Digital'], command=self.on_select_data_type) 
+        self.option_data_type.grid(row = 3, column=0)
+
+        self.label_spreadsheet_url = ctk.CTkLabel(self.frame2, text='Google Spreadsheet URL')
+
+        self.entry_spreadsheet_url = ctk.CTkEntry(self.frame2)
+
+        self.label_google_drive_id = ctk.CTkLabel(self.frame2, text='Google Drive ID')
+
+        self.entry_google_drive_id = ctk.CTkEntry(self.frame2)
 
         self.btn_save = ctk.CTkButton(self.frame2, text='Save', command=self.save_project)
 
     def on_select_data_type(self, choice):
         if choice == 'Layout':
-            self.label2.grid(row=1, column=0, sticky='ew')
-            self.entry_spread_url.grid(row=1, column=1, sticky='ew')
-            self.label4.grid(row=2, column=0, sticky='ew')
-            self.entry_redcap_api.grid(row=2, column=1, sticky='ew')        
-            self.btn_save.grid(row=3, column=1)
+            self.label_spreadsheet_url.grid(row=4, column=0, sticky='ew')
+            self.entry_spreadsheet_url.grid(row=4, column=1, sticky='ew')
+            self.btn_save.grid(row=5, column=1)
 
-            self.entry_redcap_api.configure(placeholder_text='')
+            # self.entry_redcap_api.configure(placeholder_text='')
+            self.label_google_drive_id.grid_forget()
+            self.entry_google_drive_id.grid_forget()
+        elif choice != 'Layout' and choice != 'Select Data Structure':
+            self.label_google_drive_id.grid(row=4, column=0, sticky='ew')
+            self.entry_google_drive_id.grid(row=4, column=1, sticky='ew')
+            self.btn_save.grid(row=5, column=1)
 
-            self.entry_folder_id.grid_forget()
-            self.label3.grid_forget()
-        elif choice == 'Raw Data(Machine Result)':
-            self.label3.grid(row=1, column=0, sticky='ew')
-            self.entry_folder_id.grid(row=1, column=1, sticky='ew')
-            self.label4.grid(row=2, column=0, sticky='ew')
-            self.entry_redcap_api.grid(row=2, column=1, sticky='ew')        
-            self.btn_save.grid(row=3, column=1)
-            self.entry_redcap_api.configure(placeholder_text='')
-
-
-            self.label2.grid_forget()
-            self.entry_spread_url.grid_forget()
+            self.label_spreadsheet_url.grid_forget()
+            self.entry_spreadsheet_url.grid_forget()
     def save_project(self):
         my_dic = {}  
         my_api_token = {}      
