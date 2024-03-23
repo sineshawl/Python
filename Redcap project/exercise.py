@@ -5,6 +5,7 @@ with open('project_list.json', mode='r') as file:
     my_projects = json.load(file)
 
 grouped_data = {}
+
 for i in range(len(my_projects['redcap_folder_name'])):
     folder_name = my_projects['redcap_folder_name'][i]
     if folder_name not in grouped_data:

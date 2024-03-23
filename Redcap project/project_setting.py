@@ -30,34 +30,6 @@ class projectSetting(ctk.CTkFrame):
 
     def edit_token(self, key, value):
         self.edit_popup = ctk.CTkInputDialog(text=api_list[key][value], title='Edit API token')
-    def add_new_category(self):
-        self.add_popup = ctk.CTkInputDialog(text='Enter Category Name', title='Add new Category')
-        category_name = self.add_popup.get_input()
-        if category_name != '':
-            my_api_keys = {}
-            my_api_keys_label = {}
-            my_project_list = {}
-            with open('api_keys.json', mode='r') as file:
-                my_api_keys = json.load(file)
-            with open('api_keys_label.json', mode='r') as file:
-                my_api_keys_label= json.load(file)
-
-            with open('project_list.json', mode='r') as file:
-                my_project_list = json.load(file)
-
-            if (category_name not in my_api_keys)  and (category_name not in my_api_keys_label) and (category_name not in my_project_list):
-                my_api_keys[category_name] = None
-                my_project_list[category_name]=None
-                my_api_keys_label[category_name]=None
-                with open('api_keys.json', mode='w') as file:
-                    json.dump(my_api_keys, file) 
-                with open('api_keys_label.json', mode='w') as file:
-                    json.dump(my_api_keys_label, file)
-                with open('project_list.json', mode='w') as file:
-                    json.dump(my_project_list, file)
-
-            else:
-                print(f'Category {category_name} already exists!')
 
 
     def delete_token(self, key, value):
@@ -120,8 +92,7 @@ class projectSetting(ctk.CTkFrame):
             self.btn_add.grid(row = counter, column=0, padx=(10,1), pady=1, sticky='nsew')
 
             counter += 1 
-        self.btn_add_category = ctk.CTkButton(self.inner_frame, text='Add new Category', width=30, image=self.add_category_image, command=self.add_new_category)
-        self.btn_add_category.grid(row = counter, column=0, padx=(10,1), pady=1, sticky='nsew') 
+
 
 
 
