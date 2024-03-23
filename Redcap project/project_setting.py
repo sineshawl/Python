@@ -5,23 +5,21 @@ from functools import partial
 from add_project import add_project
 from edit_project import edit_project
 
+my_projects = {}
+with open('project_list.json', mode='r') as file:
+    my_projects = json.load(file)
+
+grouped_data = {}
+for i in range(len(my_projects['redcap_folder_name'])):
+    folder_name = my_projects['redcap_folder_name'][i]
+    if folder_name not in grouped_data:
+        grouped_data[folder_name] = {}
+    for key, value in my_projects.items():
+        grouped_data[folder_name][key] = grouped_data[folder_name].get(key, []) + [value[i]]
+
+project_list= grouped_data
 
 
-
-project_list= {}
-api_list = {}
-project_detail = {}
-
-with open('api_keys_label.json', mode='r') as file:
-    project_list=json.load(file)
-
-with open('api_keys.json', mode='r') as file:
-    api_list = json.load(file)
-with open('project_list.json') as file:
-    project_detail = json.load(file)
-
-
-print(project_list.keys())
 
 
 class projectSetting(ctk.CTkFrame):
@@ -97,20 +95,22 @@ class projectSetting(ctk.CTkFrame):
         self.add_category_icon = Image.open('Images/new-folder.png').resize((20,20))
         self.add_category_image = ctk.CTkImage(self.add_category_icon)
         counter = 0
+
+
         for key in project_list.keys():
             
             self.lbl_category = ctk.CTkLabel(self.inner_frame, text=key, anchor='w', font=('Helvetica', 12, 'bold'), text_color='#2682E3')
             self.lbl_category.grid(row = counter, column=0, padx=10, pady=5, sticky='ew')
             if project_list[key] != None:
-                for value, api in zip(project_list[key], api_list[key]):
+                for value, api in zip(project_list[key]['redcap_project_name'], project_list[key]['redcap_api']):
                     counter +=1
                     value_index = 0
                     self.lbl_project = ctk.CTkLabel(self.inner_frame, text=value, anchor='w')
                     self.lbl_project.grid(row = counter, column=0, padx=(10,1), pady=1, sticky='nsew')
 
-                    self.btn_edit = ctk.CTkButton(self.inner_frame,text=None, width=30, fg_color="transparent",  image=self.edit_image, command = partial(edit_project, self, key, api, value, project_detail[key]))
+                    self.btn_edit = ctk.CTkButton(self.inner_frame,text=None, width=30, fg_color="transparent",  image=self.edit_image)
                     self.btn_edit.grid(row = counter, column=1, padx=1, pady=1, sticky='nsew')   
-                    
+                    #  command = partial(edit_project, self, key, api, value, project_detail[key])
                     self.btn_delete = ctk.CTkButton(self.inner_frame, text=None, width=30, fg_color="transparent", image=self.delete_image)
                     self.btn_delete.grid(row = counter, column=2, padx=1, pady=1, sticky='nsew') 
 
