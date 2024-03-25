@@ -4,6 +4,7 @@ import json, requests
 from functools import partial
 from add_project import add_project
 from edit_project import edit_project
+from delete_project import delete_project
 
 my_projects = {}
 with open('project_list.json', mode='r') as file:
@@ -32,9 +33,10 @@ class projectSetting(ctk.CTkFrame):
         self.edit_popup = ctk.CTkInputDialog(text=api_list[key][value], title='Edit API token')
 
 
-    def delete_token(self, key, value):
-        # self.delete_token = ctk.CTkLabel
-        self.edit_popup = ctk.CTkInputDialog(text=api_list[key][value], title='Edit API token')
+    def delete_project(self, key):
+        top_level = ctk.CTkToplevel(self)
+        top_level.geometry("400x200")
+        top_level.title("Popup")
 
 
     def __init__(self, master):
@@ -84,7 +86,7 @@ class projectSetting(ctk.CTkFrame):
                     self.btn_edit = ctk.CTkButton(self.inner_frame,text=None, width=30, fg_color="transparent",  image=self.edit_image , command= partial(edit_project, self, project_id))
                     self.btn_edit.grid(row = counter, column=1, padx=1, pady=1, sticky='nsew')   
                     #  command = partial(edit_project, self, project_id, api, value, project_detail[key])
-                    self.btn_delete = ctk.CTkButton(self.inner_frame, text=None, width=30, fg_color="transparent", image=self.delete_image)
+                    self.btn_delete = ctk.CTkButton(self.inner_frame, text=None, width=30, fg_color="transparent", image=self.delete_image, command=self.delete_project(project_id))
                     self.btn_delete.grid(row = counter, column=2, padx=1, pady=1, sticky='nsew') 
 
                     value_index +=1
@@ -93,6 +95,7 @@ class projectSetting(ctk.CTkFrame):
             self.btn_add.grid(row = counter, column=0, columnspan =3, padx=(10,1), pady=1, sticky='nsew')
 
             counter += 1 
+
 
 
 

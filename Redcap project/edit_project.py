@@ -7,7 +7,7 @@ class edit_project(ctk.CTkFrame):
         super().__init__(master)
         self.place(relx=0.0, rely=0.0, relwidth=1.0, relheight=1.0)
         
-        project_id = project_id -1 
+        self.project_id = project_id -1 
 
         self.frame1 = ctk.CTkFrame(self)
         self.frame1.place(relx=0.02, rely=0.02, relwidth=0.96, relheight=0.17)
@@ -25,12 +25,12 @@ class edit_project(ctk.CTkFrame):
         with open('project_list.json', mode='r') as file:
             project_list = json.load(file)
 
-        self.redcap_folder = project_list['redcap_folder_name'][project_id]
-        self.redcap_project_name =  project_list['redcap_project_name'][project_id]
-        self.redcap_api =  project_list['redcap_api'][project_id]
-        self.spreadsheet_url =  project_list['spreadsheet_url'][project_id]
-        self.google_drive_id =  project_list['google_drive_id'][project_id]
-        self.structure_of_data = project_list['structure_of_data'][project_id]
+        self.redcap_folder = project_list['redcap_folder_name'][self.project_id]
+        self.redcap_project_name =  project_list['redcap_project_name'][self.project_id]
+        self.redcap_api =  project_list['redcap_api'][self.project_id]
+        self.spreadsheet_url =  project_list['spreadsheet_url'][self.project_id]
+        self.google_drive_id =  project_list['google_drive_id'][self.project_id]
+        self.structure_of_data = project_list['structure_of_data'][self.project_id]
        
         
 
@@ -40,23 +40,30 @@ class edit_project(ctk.CTkFrame):
 
         self.frame2.columnconfigure((0,1), weight=1)
         self.frame2.rowconfigure((0, 1, 2, 3, 4,5,6), weight=1)
+
+        var_redcap_folder=ctk.StringVar(value=self.redcap_folder)
+        var_redcap_project_name = ctk.StringVar(value=self.redcap_project_name)
+        var_redcap_api = ctk.StringVar(value=self.redcap_api)
+        var_spreadsheet_url = ctk.StringVar(value=self.spreadsheet_url)
+        var_google_drive_id = ctk.StringVar(value=self.google_drive_id)
+        
        
         self.label_redcap_folder = ctk.CTkLabel(self.frame2, text='REDCap Folder Name')
         self.label_redcap_folder.grid(row=0, column=0, ipadx=10, sticky='we')
 
-        self.entry_redcap_folder = ctk.CTkEntry(self.frame2, placeholder_text=self.redcap_folder)
+        self.entry_redcap_folder = ctk.CTkEntry(self.frame2, textvariable=var_redcap_folder)
         self.entry_redcap_folder.grid(row=0, column=1, sticky='we')
 
         self.label_redcap_project = ctk.CTkLabel(self.frame2, text='REDCap Project Name')
         self.label_redcap_project.grid(row=1, column=0)
 
-        self.entry_redcap_project = ctk.CTkEntry(self.frame2, placeholder_text=self.redcap_project_name)
+        self.entry_redcap_project = ctk.CTkEntry(self.frame2, textvariable=var_redcap_project_name)
         self.entry_redcap_project.grid(row=1, column=1, sticky='we')
 
         self.label_redcap_api = ctk.CTkLabel(self.frame2, text='REDCap API')
         self.label_redcap_api.grid(row=2, column=0)
 
-        self.entry_redcap_api = ctk.CTkEntry(self.frame2, placeholder_text=self.redcap_api)
+        self.entry_redcap_api = ctk.CTkEntry(self.frame2, textvariable=var_redcap_api)
         self.entry_redcap_api.grid(row=2, column=1, sticky='we')
 
 
@@ -66,13 +73,15 @@ class edit_project(ctk.CTkFrame):
         self.option_data_type.grid(row = 3, column=0)
         self.label_spreadsheet_url = ctk.CTkLabel(self.frame2, text='Google Spreadsheet URL')
 
-        self.entry_spreadsheet_url = ctk.CTkEntry(self.frame2)
+        self.entry_spreadsheet_url = ctk.CTkEntry(self.frame2, textvariable=var_spreadsheet_url)
 
         self.label_google_drive_id = ctk.CTkLabel(self.frame2, text='Google Drive ID')
 
-        self.entry_google_drive_id = ctk.CTkEntry(self.frame2)
+        self.entry_google_drive_id = ctk.CTkEntry(self.frame2, textvariable=var_google_drive_id)
 
         self.btn_save = ctk.CTkButton(self.frame2, text='Save', command=self.save_project)
+        self.on_select_data_type(self.structure_of_data)
+        
 
     def on_select_data_type(self, choice):
         if choice == 'Layout':
@@ -122,13 +131,12 @@ class edit_project(ctk.CTkFrame):
             #     self.entry_redcap_api.insert(0, 'API length should be 32')
             #     self.entry_redcap_api.configure(text_color='red')
             else: 
-                project_list['project_id'].append(len(project_list['project_id'])+1)           
-                project_list['redcap_folder_name'].append(redcap_folder)
-                project_list['redcap_project_name'].append(redcap_project_name)
-                project_list['redcap_api'].append(redcap_api)
-                project_list['structure_of_data'].append(structure_of_data)
-                project_list['spreadsheet_url'].append(spreadsheet_url)
-                project_list['google_drive_id'].append('None')
+                project_list['redcap_folder_name'][self.project_id] = redcap_folder
+                project_list['redcap_project_name'][self.project_id] = redcap_project_name
+                project_list['redcap_api'][self.project_id] = redcap_api
+                project_list['structure_of_data'][self.project_id] = structure_of_data
+                project_list['spreadsheet_url'][self.project_id] = spreadsheet_url
+                project_list['google_drive_id'][self.project_id] ='None'
 
                 with open('project_list.json', mode='w') as file:
                     json.dump(project_list, file)
@@ -139,13 +147,12 @@ class edit_project(ctk.CTkFrame):
             if google_drive_id == '':
                 self.entry_folder_id.configure(placeholder_text='folder id required', placeholder_text_color='red')
             else:
-                project_list['project_id'].append(len(project_list['project_id'])+1)           
-                project_list['redcap_folder_name'].append(redcap_folder)
-                project_list['redcap_project_name'].append(redcap_project_name)
-                project_list['redcap_api'].append(redcap_api)
-                project_list['structure_of_data'].append(structure_of_data)
-                project_list['spreadsheet_url'].append('None')
-                project_list['google_drive_id'].append(google_drive_id)
+                project_list['redcap_folder_name'][self.project_id] = redcap_folder
+                project_list['redcap_project_name'][self.project_id] = redcap_project_name
+                project_list['redcap_api'][self.project_id] = redcap_api
+                project_list['structure_of_data'][self.project_id] = structure_of_data
+                project_list['spreadsheet_url'][self.project_id] = 'None'
+                project_list['google_drive_id'][self.project_id] = google_drive_id
          
                 with open('project_list.json', mode='w') as file:
                     json.dump(project_list, file)
