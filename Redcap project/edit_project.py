@@ -25,12 +25,12 @@ class edit_project(ctk.CTkFrame):
         with open('project_list.json', mode='r') as file:
             project_list = json.load(file)
 
-        redcap_folder = project_list['redcap_folder_name'][project_id]
-        redcap_project_name =  project_list['redcap_project_name'][project_id]
-        redcap_api =  project_list['redcap_api'][project_id]
-        spreadsheet_url =  project_list['spreadsheet_url'][project_id]
-        google_drive_id =  project_list['google_drive_id'][project_id]
-        structure_of_data = project_list['structure_of_data'][project_id]
+        self.redcap_folder = project_list['redcap_folder_name'][project_id]
+        self.redcap_project_name =  project_list['redcap_project_name'][project_id]
+        self.redcap_api =  project_list['redcap_api'][project_id]
+        self.spreadsheet_url =  project_list['spreadsheet_url'][project_id]
+        self.google_drive_id =  project_list['google_drive_id'][project_id]
+        self.structure_of_data = project_list['structure_of_data'][project_id]
        
         
 
@@ -44,24 +44,26 @@ class edit_project(ctk.CTkFrame):
         self.label_redcap_folder = ctk.CTkLabel(self.frame2, text='REDCap Folder Name')
         self.label_redcap_folder.grid(row=0, column=0, ipadx=10, sticky='we')
 
-        self.entry_redcap_folder = ctk.CTkEntry(self.frame2, placeholder_text=redcap_folder)
+        self.entry_redcap_folder = ctk.CTkEntry(self.frame2, placeholder_text=self.redcap_folder)
         self.entry_redcap_folder.grid(row=0, column=1, sticky='we')
 
         self.label_redcap_project = ctk.CTkLabel(self.frame2, text='REDCap Project Name')
         self.label_redcap_project.grid(row=1, column=0)
 
-        self.entry_redcap_project = ctk.CTkEntry(self.frame2, placeholder_text=redcap_project_name)
+        self.entry_redcap_project = ctk.CTkEntry(self.frame2, placeholder_text=self.redcap_project_name)
         self.entry_redcap_project.grid(row=1, column=1, sticky='we')
 
         self.label_redcap_api = ctk.CTkLabel(self.frame2, text='REDCap API')
         self.label_redcap_api.grid(row=2, column=0)
 
-        self.entry_redcap_api = ctk.CTkEntry(self.frame2, placeholder_text=redcap_api)
+        self.entry_redcap_api = ctk.CTkEntry(self.frame2, placeholder_text=self.redcap_api)
         self.entry_redcap_api.grid(row=2, column=1, sticky='we')
 
-        self.option_data_type = ctk.CTkOptionMenu(self.frame2, values=['Select Data Structure','Layout', 'Antigen', 'Antibody', 'qPCR', 'Digital'], variable=structure_of_data, command=self.on_select_data_type) 
-        self.option_data_type.grid(row = 3, column=0)
 
+        option_var = ctk.StringVar(value= self.structure_of_data)
+
+        self.option_data_type = ctk.CTkOptionMenu(self.frame2, values=['Select Data Structure','Layout', 'Antigen', 'Antibody', 'qPCR', 'Digital'], variable=option_var, command=self.on_select_data_type) 
+        self.option_data_type.grid(row = 3, column=0)
         self.label_spreadsheet_url = ctk.CTkLabel(self.frame2, text='Google Spreadsheet URL')
 
         self.entry_spreadsheet_url = ctk.CTkEntry(self.frame2)
@@ -76,6 +78,7 @@ class edit_project(ctk.CTkFrame):
         if choice == 'Layout':
             self.label_spreadsheet_url.grid(row=4, column=0, sticky='ew')
             self.entry_spreadsheet_url.grid(row=4, column=1, sticky='ew')
+            self.entry_spreadsheet_url.configure(placeholder_text = self.spreadsheet_url)
             self.btn_save.grid(row=5, column=1)
 
             # self.entry_redcap_api.configure(placeholder_text='')
@@ -84,6 +87,7 @@ class edit_project(ctk.CTkFrame):
         elif choice != 'Layout' and choice != 'Select Data Structure':
             self.label_google_drive_id.grid(row=4, column=0, sticky='ew')
             self.entry_google_drive_id.grid(row=4, column=1, sticky='ew')
+            self.entry_google_drive_id.configure(placeholder_text = self.google_drive_id)
             self.btn_save.grid(row=5, column=1)
 
             self.label_spreadsheet_url.grid_forget()
