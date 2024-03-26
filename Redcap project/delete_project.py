@@ -6,7 +6,8 @@ class delete_project(ctk.CTkToplevel):
     def __init__(self, master, project_id):
         super().__init__(master)
         self.title('Delete Project')
-        self.geometry('300x150')
+        self.focus()
+        print(master)
         self.resizable(width=False, height=False)
 
         self.project_id = project_id - 1
