@@ -86,7 +86,7 @@ class projectSetting(ctk.CTkFrame):
                     self.btn_edit = ctk.CTkButton(self.inner_frame,text=None, width=30, fg_color="transparent",  image=self.edit_image , command= partial(edit_project, self, project_id))
                     self.btn_edit.grid(row = counter, column=1, padx=1, pady=1, sticky='nsew')   
                     #  command = partial(edit_project, self, project_id, api, value, project_detail[key])
-                    self.btn_delete = ctk.CTkButton(self.inner_frame, text=None, width=30, fg_color="transparent", image=self.delete_image, command=self.delete_project(project_id))
+                    self.btn_delete = ctk.CTkButton(self.inner_frame, text=None, width=30, fg_color="transparent", image=self.delete_image, command=partial(delete_project, self,project_id))
                     self.btn_delete.grid(row = counter, column=2, padx=1, pady=1, sticky='nsew') 
 
                     value_index +=1
