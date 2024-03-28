@@ -8,6 +8,11 @@ from project_setting import projectSetting
 from functools import partial
 import json
 
+project_list = {}
+
+with open('project_list.json', mode='r') as file:
+    project_list = json.load(file)
+
 
 
 class leftFrame(ctk.CTkFrame):
@@ -264,15 +269,13 @@ class rightFrame(ctk.CTkFrame):
         self.rowconfigure((0, 1, 2, 3, 4, 5, 6, 7), weight=1)
         self.columnconfigure(0, weight=1)
         self.project_list = {}
-        with open('api_keys_label.json', mode='r') as file:
-            self.project_list = json.load(file)
 
-        project_key =[key for key in self.project_list.keys()]
+        project_key =list(set([folder for folder in project_list['redcap_folder_name']]))
         
         combo_box_value = ['Select Project Folder']
         combo_box_value.extend(project_key)
         print(project_key)
-        self.combo_data_category = ctk.CTkComboBox(self, values=combo_box_value, command=self.project_selected)
+        self.combo_data_category = ctk.CTkComboBox(self, values=combo_box_value, command=self.on_select_project)
         self.combo_data_category.grid(row=0, column=0, padx=5, pady=5, sticky='ew')
 
         # self.combo_google_sheet_url = ctk.CTkComboBox(self, values=['Google Sheet Url','Dark', 'Light'])
@@ -282,11 +285,11 @@ class rightFrame(ctk.CTkFrame):
         # self.combo_redcap_project = ctk.CTkComboBox(self)
         # self.combo_redcap_project.grid(row=2, column=0, padx=5, pady=5, sticky='ew')
         # self.combo_redcap_project.grid_forget()
-    def project_selected(self, choice):
-        project_for_selected_key = [project for project in self.project_list[choice]]
-        
+    def on_select_project(self, choice):
+        project_for_selected_key = [project_name for folder, project_name in zip(project_list['redcap_folder_name'], project_list['redcap_project_name']) if folder == choice ]
+        print(project_for_selected_key)
 
-        self.combo_project_list = ctk.CTkComboBox(self, values=project_for_selected_key, command=self.data_type_selected)
+        self.combo_project_list = ctk.CTkComboBox(self, values=project_for_selected_key)
         self.combo_project_list.grid(row=1, column=0, padx=5, pady=5, sticky='ew')
         # self.combo_redcap_project.grid_forget()
     def data_type_selected(self, choice):
