@@ -275,7 +275,7 @@ class rightFrame(ctk.CTkFrame):
         combo_box_value = ['Select Project Folder']
         combo_box_value.extend(project_key)
         print(project_key)
-        self.combo_data_category = ctk.CTkComboBox(self, values=combo_box_value, command=self.on_select_project)
+        self.combo_data_category = ctk.CTkComboBox(self, values=combo_box_value, command=self.on_select_folder)
         self.combo_data_category.grid(row=0, column=0, padx=5, pady=5, sticky='ew')
 
         # self.combo_google_sheet_url = ctk.CTkComboBox(self, values=['Google Sheet Url','Dark', 'Light'])
@@ -285,18 +285,36 @@ class rightFrame(ctk.CTkFrame):
         # self.combo_redcap_project = ctk.CTkComboBox(self)
         # self.combo_redcap_project.grid(row=2, column=0, padx=5, pady=5, sticky='ew')
         # self.combo_redcap_project.grid_forget()
-    def on_select_project(self, choice):
-        project_for_selected_key = [project_name for folder, project_name in zip(project_list['redcap_folder_name'], project_list['redcap_project_name']) if folder == choice ]
-        print(project_for_selected_key)
+    def on_select_folder(self, choice):
+        project_name = [project for project, folder in zip(project_list['redcap_project_name'], project_list['redcap_folder_name']) if folder == choice]
 
-        self.combo_project_list = ctk.CTkComboBox(self, values=project_for_selected_key)
+        self.combo_project_list = ctk.CTkComboBox(self, values=project_name, command=self.on_select_project)
         self.combo_project_list.grid(row=1, column=0, padx=5, pady=5, sticky='ew')
-        # self.combo_redcap_project.grid_forget()
-    def data_type_selected(self, choice):
-        type_of_data = ['Select Data Type', 'Layout', 'Raw-Antigen', 'Raw-Antibody', 'Raw-qPCR', 'Raw-Digital']
-        self.combo_data_type = ctk.CTkComboBox(self, values=type_of_data)
-        self.combo_data_type.grid(row=2, column=0, padx=5, pady=5, sticky='ew')
-        # self.combo_redcap_project.configure(values=project_for_selected_key)
+
+
+
+
+    def on_select_project(self, choice):
+        
+        key = [key for key, project in zip(project_list['project_id'], project_list['redcap_project_name']) if project == choice][0]
+       
+        projects_name = project_list['redcap_project_name'][key]
+        spreadheet_url = project_list['spreadsheet_url'][key]
+        google_drive_id = project_list['google_drive_id'][key]
+        structure_of_data = project_list['structure_of_data'][key]
+        redcap_api = project_list['redcap_api'][key]
+
+        self.label_data_structure = ctk.CTkLabel(self, text=structure_of_data)
+        self.label_data_structure.grid(row=2, column=0, padx=5, pady=5, sticky='ew')
+        
+        # if structure_of_data == 'Layout':
+        #     self.label_spreadsheet_url = ctk.CTkLabel(self, text=spreadheet_url)
+        #     self.label_spreadsheet_url.grid(row=3, column=0, padx=5, pady=5, sticky='ew')
+        # else :
+        #      self.label_google_drive_id = ctk.CTkLabel(self, text=google_drive_id)
+        #      self.label_google_drive_id.grid(row=3, column=0, padx=5, pady=5, sticky='ew')
+        # self.label_redcap_api = ctk.CTkLabel(self, text=redcap_api)
+        # self.label_redcap_api.grid(row=4, column=0, padx=5, pady=5, sticky='ew')
 
 class App(ctk.CTk):
     def __init__(self):
