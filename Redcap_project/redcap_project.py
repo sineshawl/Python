@@ -1,7 +1,7 @@
 import json, requests
 
 
-url = 'https://redcapsvr2.ahri.gov.et/api/'
+url = ''
 def project_name(my_tokens):
     my_dic = {}
 
